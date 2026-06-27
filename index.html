@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GosCore Analytics 23</title>
+<meta name="theme-color" content="#070A13"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Analytics 23"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<style>
+:root{
+  --bg:#070A13;--stroke:rgba(255,255,255,.12);--text:#F7F8FC;--muted:#A7B2C6;--soft:rgba(255,255,255,.075);
+  --good:#34D399;--norm:#FACC15;--warn:#FB923C;--bad:#FB7185;
+}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;background:radial-gradient(900px 640px at 8% -4%,rgba(56,189,248,.18),transparent 60%),radial-gradient(760px 520px at 96% 0%,rgba(168,85,247,.20),transparent 62%),linear-gradient(180deg,#0a1020,#060914 70%);min-height:100vh}
+.app{display:grid;grid-template-columns:292px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;padding:22px 16px;background:rgba(3,7,18,.68);border-right:1px solid var(--stroke)}
+.logo{width:52px;height:52px;border-radius:17px;background:linear-gradient(135deg,#2dd4bf,#60a5fa,#a78bfa);display:grid;place-items:center;color:#06101f;font-weight:1000}
+.brand{padding:8px 10px 16px}.brand h1{margin:14px 0 5px;font-size:22px}.brand p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}
+.credit{margin:10px;padding:14px;border:1px solid rgba(96,165,250,.35);border-radius:18px;background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(168,85,247,.12));font-size:12px;color:var(--muted);line-height:1.35}
+.credit b{display:block;color:#fff;font-size:14px;margin-top:4px}
+.nav{display:grid;gap:8px}.nav button{border:1px solid transparent;background:transparent;color:var(--muted);text-align:left;padding:12px 13px;border-radius:14px;font-weight:850;cursor:pointer;font-size:15px}.nav button:hover,.nav button.active{background:var(--soft);color:var(--text);border-color:var(--stroke)}
+.main{padding:26px clamp(14px,2.3vw,34px) 52px;min-width:0}.top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:20px}.title h2{font-size:clamp(30px,3vw,46px);line-height:1;margin:0 0 8px}.title p{margin:0;color:var(--muted);font-size:clamp(16px,1.5vw,20px)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn{border:1px solid var(--stroke);background:rgba(255,255,255,.08);color:var(--text);border-radius:15px;padding:12px 16px;cursor:pointer;font-weight:900;font-size:15px}.btn.primary{border:0;background:linear-gradient(135deg,#2dd4bf,#60a5fa,#a78bfa);color:#06101f}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.055));border:1px solid var(--stroke);border-radius:24px;box-shadow:0 22px 70px rgba(0,0,0,.34)}
+.section{display:none}.section.active{display:block}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(185px,1fr));gap:14px;margin-bottom:16px}.kpi{padding:17px;overflow:hidden}.kpi .label{color:var(--muted);font-size:12px;font-weight:950;text-transform:uppercase}.kpi .value{font-size:clamp(24px,2.2vw,36px);font-weight:1000;margin-top:9px;line-height:1.08;word-break:break-word}.kpi .note{font-size:14px;color:var(--muted);margin-top:5px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(230px,1fr));gap:14px;margin-bottom:16px}.orgcard{padding:16px;overflow:hidden}.orghead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px}.orgname{display:flex;gap:10px;align-items:center;font-size:15px;font-weight:1000;line-height:1.15;min-width:0}.stripe{width:8px;min-width:8px;height:28px;border-radius:999px}.score{font-size:26px;font-weight:1000}.metric{display:grid;grid-template-columns:92px 1fr 54px;gap:9px;align-items:center;color:var(--muted);font-size:13px;margin:9px 0}.progress{height:9px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;border-radius:999px}
+.tablewrap{padding:18px;overflow:auto;margin-bottom:16px}h3{font-size:24px;margin:0 0 8px}.small{font-size:15px;color:var(--muted);line-height:1.45}table{width:100%;border-collapse:collapse;min-width:980px}th{font-size:12px;color:var(--muted);text-transform:uppercase;text-align:left;padding:12px 10px;border-bottom:1px solid var(--stroke);white-space:nowrap}td{font-size:16px;padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
+.orglabel{display:inline-flex;gap:9px;align-items:center;font-weight:1000;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);white-space:nowrap}.dot{width:10px;height:10px;border-radius:50%}.badge{display:inline-flex;border-radius:999px;padding:6px 10px;font-size:14px;font-weight:1000}.b-green{background:rgba(52,211,153,.15);color:var(--good)}.b-yellow{background:rgba(250,204,21,.15);color:var(--norm)}.b-orange{background:rgba(251,146,60,.15);color:var(--warn)}.b-red{background:rgba(251,113,133,.15);color:var(--bad)}
+.chart{padding:18px;margin-bottom:16px}canvas{display:block;width:100%;height:auto}.alerts{display:grid;gap:10px}.alert{font-size:16px;line-height:1.45;padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--stroke)}.weekline{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr));gap:16px;margin-bottom:18px;align-items:end}label{font-size:12px;color:var(--muted);font-weight:950;text-transform:uppercase;display:block;margin-bottom:6px}input{width:100%;border:1px solid var(--stroke);background:rgba(3,7,18,.45);color:var(--text);border-radius:12px;padding:11px;font-size:16px;font-weight:800}
+.heat{min-width:980px}.heat td,.heat th{text-align:center}.heat td:first-child,.heat th:first-child{text-align:left}.heatcell{border-radius:12px;padding:10px 8px;font-weight:1000;color:#06101f}.h-good{background:var(--good)}.h-norm{background:var(--norm)}.h-warn{background:var(--warn)}.h-bad{background:var(--bad)}.h-zero{background:rgba(255,255,255,.09);color:var(--muted)}
+.factor{display:grid;grid-template-columns:220px 1fr 90px;gap:12px;align-items:center;margin:10px 0}.factorbar{height:10px;background:rgba(255,255,255,.09);border-radius:99px;overflow:hidden}.factorbar i{display:block;height:100%;border-radius:99px}.helpGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.helpBox{padding:18px}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(0,0,0,.25);border:1px solid var(--stroke);border-radius:14px;padding:12px;font-size:14px;line-height:1.55;overflow:auto}
+
+
+/* GosCore compact product signature */
+.goscore-footer{
+  max-width:760px;
+  margin:24px auto 0;
+  padding:16px 18px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));
+  box-shadow:0 18px 55px rgba(0,0,0,.22);
+}
+.footer-brand{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.footer-title{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:950;letter-spacing:-.02em;color:#DDE7F7}
+.footer-star{color:#8BD5FF;text-shadow:0 0 18px rgba(56,189,248,.35)}
+.footer-name{color:#BFD7FF}
+.footer-badge{padding:7px 10px;border:1px solid rgba(96,165,250,.25);border-radius:999px;background:rgba(96,165,250,.08);color:#AFC6E8;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+.footer-subtitle{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.45}
+.footer-modules{margin-top:10px;color:#E7EEF8;font-size:13px;font-weight:800;line-height:1.55}
+.footer-copy{margin-top:10px;color:var(--muted);font-size:12px}
+.footer-contacts{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+.footer-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.10);border-radius:999px;background:rgba(255,255,255,.055);font-size:12px;font-weight:850;color:#E7EEF8}
+
+/* Analytics v2 UI blocks */
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-bottom:16px}
+.hero-card{padding:20px;position:relative;overflow:hidden}
+.hero-card:before{content:"";position:absolute;right:-120px;top:-120px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.16),transparent 70%)}
+.hero-title{font-size:20px;font-weight:950;margin-bottom:10px}
+.hero-score{font-size:clamp(48px,5vw,78px);font-weight:1000;line-height:.95;margin:8px 0}
+.hero-note{color:var(--muted);font-size:15px;line-height:1.45;max-width:720px}
+.insight-list{display:grid;gap:10px;margin-top:12px}
+.insight-mini{padding:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);border-radius:16px;font-size:14px;line-height:1.4;color:#E8EEF8}
+.ranking-grid{display:grid;gap:12px;margin-bottom:16px}
+.rank-card{display:grid;grid-template-columns:52px minmax(150px,1.1fr) 1.8fr 90px;align-items:center;gap:16px;padding:14px 16px;border:1px solid rgba(255,255,255,.11);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035))}
+.rank-num{font-size:18px;font-weight:1000;color:#AFC6E8}
+.rank-name{font-weight:1000}
+.rank-meta{color:var(--muted);font-size:13px;margin-top:4px}
+.rank-score{font-size:24px;font-weight:1000;text-align:right}
+.delta{font-size:12px;font-weight:950;margin-left:6px}
+.delta.up{color:var(--good)}.delta.down{color:var(--bad)}.delta.flat{color:var(--muted)}
+.ai-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ai-card{padding:16px;border:1px solid rgba(255,255,255,.11);border-radius:20px;background:rgba(255,255,255,.055)}
+.ai-card h4{margin:0 0 10px;font-size:16px}
+.ai-card p{margin:0;color:#DDE7F7;line-height:1.5}
+.matrix-heat{display:grid;gap:8px}
+.heat-row{display:grid;grid-template-columns:150px repeat(7,1fr) 72px;gap:8px;align-items:center}
+.heat-dayhead{color:var(--muted);font-size:12px;font-weight:950;text-align:center}
+.heat-square{height:48px;border-radius:14px;display:grid;place-items:center;font-weight:1000;color:#07101f;transition:.15s transform}
+.heat-square:hover{transform:translateY(-2px) scale(1.03)}
+.heat-label{font-weight:1000;white-space:nowrap}
+.index-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.index-card{padding:18px}
+.index-card h3{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.factor .plus{color:var(--good)}.factor .minus{color:var(--bad)}
+.compare-cards{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:14px;margin-bottom:16px}
+.compare-card{padding:16px}
+.compare-title{font-weight:1000;margin-bottom:10px}
+.compare-big{font-size:32px;font-weight:1000}
+.compare-sub{color:var(--muted);font-size:13px;margin-top:4px}
+.table-light{min-width:760px}
+
+@media(max-width:1000px){
+  .hero-grid,.ai-grid,.index-grid,.compare-cards{grid-template-columns:1fr}
+  .rank-card{grid-template-columns:40px 1fr;gap:10px}
+  .rank-card .progress{grid-column:1/3}
+  .rank-score{text-align:left}
+  .heat-row{grid-template-columns:110px repeat(7,48px) 60px;overflow:auto}
+}
+
+@media(max-width:1150px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.kpis,.cards,.weekline,.helpGrid{grid-template-columns:1fr}.top{flex-direction:column}.actions{justify-content:flex-start}}@media(max-width:620px){.main{padding:18px 12px 40px}.btn{width:100%;text-align:center}.actions{width:100%}.metric{grid-template-columns:78px 1fr 42px}.factor{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="brand"><div class="logo">23</div><h1>Analytics 23</h1><p>GosCore-модуль аналитики для государственных организаций 23 сервера Grand Mobile.</p></div>
+
+<div class="nav">
+<button class="active" data-tab="dash">🏛 Дашборд</button>
+<button data-tab="heatmap">🔥 Тепловая карта</button>
+<button data-tab="why">🔎 Причины индекса</button>
+<button data-tab="compare">📈 Сравнение недель</button>
+<button data-tab="analytics">🧠 Выводы ИИ</button>
+<button data-tab="settings">⚙️ Нормы</button>
+<button data-tab="sync">🔌 Синхронизация</button>
+<button data-tab="help">❔ Инструкция</button>
+</div>
+</aside>
+<main class="main">
+<div class="top"><div class="title"><h2 id="pageTitle">Дашборд Analytics 23</h2><p id="period"></p></div><div class="actions"><button class="btn primary" onclick="syncFromSheet()">Синхронизировать</button><button class="btn" onclick="saveWeek()">Сохранить неделю</button><button class="btn" onclick="exportPNG()">PNG-отчет</button></div></div>
+<section id="dash" class="section active">
+  <div class="hero-grid">
+    <div class="panel hero-card" id="heroHealth"></div>
+    <div class="panel hero-card" id="heroExecutive"></div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="ranking-grid" id="rankingCards"></div>
+  <div class="panel chart"><h3>Выполнение недельной нормы</h3><canvas id="chartNorm" width="1500" height="560"></canvas></div>
+  <div class="panel tablewrap"><h3>Полная таблица показателей</h3><p class="small">Детальная управленческая таблица по организациям 23 сервера.</p><table id="summaryTable"></table></div>
+</section>
+<section id="heatmap" class="section">
+  <div class="panel tablewrap"><h3>Тепловая карта ежедневной нормы</h3><p class="small">Каждый квадрат — выполнение дневной нормы по баллам. Наведи курсор, чтобы увидеть детали.</p><div id="heatMatrix" class="matrix-heat"></div></div>
+  <div class="panel chart"><h3>Баллы по дням</h3><canvas id="chartDailyPoints" width="1500" height="560"></canvas></div>
+  <div class="panel tablewrap"><h3>Табличный вид</h3><table id="heatTable" class="heat"></table></div>
+</section>
+<section id="why" class="section"><div class="tablewrap" style="padding:0;overflow:visible"><h3>Причины индекса</h3><p class="small">Разложение индекса по факторам: выполнение нормы, вклад лидера, вклад старшего состава, дни и негативные сигналы.</p><div id="whyWrap" class="index-grid"></div></div></section>
+<section id="compare" class="section">
+  <div class="compare-cards" id="compareCards"></div>
+  <div class="panel tablewrap"><h3>Сравнение недель</h3><p class="small">Нажимай «Сохранить неделю» после синхронизации, чтобы видеть динамику.</p><table id="compareTable" class="table-light"></table></div>
+  <div class="panel chart"><h3>Динамика среднего индекса</h3><canvas id="chartHistory" width="1500" height="560"></canvas></div>
+</section>
+<section id="analytics" class="section"><div class="panel tablewrap"><h3>AI-сводка для собрания</h3><p class="small">Автоматически формируется из баллов, набора, увольнений, жалоб, мероприятий и динамики.</p><div id="alerts" class="ai-grid"></div></div></section>
+<section id="settings" class="section"><div class="panel tablewrap"><h3>Нормы баллов</h3><p class="small">Нормы задаются индивидуально для каждой организации.</p><table id="normsTable"></table><br><button class="btn primary" onclick="recalcNorms()">Нормы = факт недели × 1.10</button><button class="btn" onclick="copyNorms()">Скопировать нормы</button></div></section>
+<section id="sync" class="section"><div class="panel tablewrap"><h3>Синхронизация с Google Sheet</h3><p class="small">Кураторы заполняют закрытый лист общей таблицы. Сайт читает его через Apps Script.</p><div class="weekline"><div style="grid-column:1/4"><label>Apps Script Web App URL</label><input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"></div><div><label>Действие</label><button class="btn primary" onclick="syncFromSheet()">Синхронизировать</button></div></div><div class="weekline"><div><label>Неделя</label><input id="week" type="number"></div><div><label>Начало</label><input id="dateStart" type="date"></div><div><label>Конец</label><input id="dateEnd" type="date"></div><div><label>Сохранить</label><button class="btn" onclick="saveConfig()">Сохранить настройки</button></div></div><div class="formula">Формат листа: Организация | Показатель | ПН | ВТ | СР | ЧТ | ПТ | СБ | ВС<br>Показатели: Баллы лидер, Баллы СС, Онлайн, Собесы, Принято, Уволено, Жалобы, Наказания, Мероприятия</div></div></section>
+<section id="help" class="section"><div class="helpGrid"><div class="panel helpBox"><h3>Как пользоваться</h3><ol><li>Кураторы заполняют лист <b>Stats</b> в Google-таблице.</li><li>Руководитель открывает Analytics 23 и нажимает «Синхронизировать».</li><li>Смотрит рейтинг, тепловую карту, причины индекса и выводы.</li><li>После собрания сохраняет неделю для истории.</li></ol></div><div class="panel helpBox"><h3>Как считается индекс</h3><div class="formula">Индекс = (Баллы лидер + Баллы СС) / Норма × 100%</div><p class="small">Жалобы, наказания, онлайн и мероприятия не входят в норму, но используются в выводах.</p></div><div class="panel helpBox"><h3>Цвета тепловой карты</h3><div class="formula">🟢 100%+<br>🟡 80–99%<br>🟠 50–79%<br>🔴 1–49%<br>Серый — 0</div></div><div class="panel helpBox"><h3>Авторская карточка</h3><p class="small">Модуль Analytics 23 является частью концепции GosCore для 23 сервера. created and designed by John Lincoln.</p></div></div></section>
+
+<footer class="goscore-footer">
+  <div class="footer-brand">
+    <div>
+      <div class="footer-title"><span class="footer-star">✦</span><span class="footer-name">GosCore by John Lincoln</span></div>
+      <div class="footer-subtitle">Analytics 23 • Grand Mobile • 23 Server</div>
+    </div>
+    <div class="footer-badge">Version 2.0</div>
+  </div>
+  <div class="footer-modules">Modules: Analytics 23 • Leader Control • Discord Moderation • GosPay • GosPortal • Profiles • Awards • Archive</div>
+  <div class="footer-contacts">
+    <span class="footer-pill">Telegram: @fireflywhy</span>
+    <span class="footer-pill">Discord: @geo_lincoln</span>
+  </div>
+  <div class="footer-copy">Created by John Lincoln. © 2026</div>
+</footer>
+
+</main>
+</div>
+<script>
+const ORGS=["Правительство","ФСБ","МВД Южный","МВД Арзамас","ВЧ","МЗ Арзамас","МЗ Южный","СМИ"],DAYS=["ПН","ВТ","СР","ЧТ","ПТ","СБ","ВС"],COLORS={"Правительство":"#FACC15","ФСБ":"#A855F7","МВД Южный":"#38BDF8","МВД Арзамас":"#38BDF8","ВЧ":"#84CC16","МЗ Арзамас":"#FB7185","МЗ Южный":"#FB7185","СМИ":"#FB923C"},SHORT={"Правительство":"Пра-во","ФСБ":"ФСБ","МВД Южный":"МВД Ю","МВД Арзамас":"МВД А","ВЧ":"ВЧ","МЗ Арзамас":"МЗ-А","МЗ Южный":"МЗ-Ю","СМИ":"СМИ"},baseNorms={"Правительство":950,"ФСБ":2200,"МВД Южный":1700,"МВД Арзамас":1550,"ВЧ":700,"МЗ Арзамас":700,"МЗ Южный":700,"СМИ":800},$=id=>document.getElementById(id);
+const METRICS=[["leaderPoints","Баллы лидер"],["staffPoints","Баллы СС"],["online","Онлайн"],["interviews","Собесы"],["recruits","Принято"],["fired","Уволено"],["complaints","Жалобы"],["punish","Наказания"],["events","Мероприятия"]];
+function weekBounds(d=new Date()){const x=new Date(d),day=x.getDay()||7,mon=new Date(x);mon.setDate(x.getDate()-day+1);const sun=new Date(mon);sun.setDate(mon.getDate()+6);const f=a=>a.toISOString().slice(0,10);return[f(mon),f(sun)]}
+function getISOWeek(d=new Date()){const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const dayNum=date.getUTCDay()||7;date.setUTCDate(date.getUTCDate()+4-dayNum);const yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));return Math.ceil((((date-yearStart)/86400000)+1)/7)}
+function emptyData(){const data={};ORGS.forEach(o=>{data[o]={};DAYS.forEach(day=>{data[o][day]={};METRICS.forEach(([k])=>data[o][day][k]=0)})});return data}
+const [ds,de]=weekBounds();const init={week:getISOWeek(),dateStart:ds,dateEnd:de,norms:{...baseNorms},data:emptyData(),scriptUrl:"",history:[]};let state=JSON.parse(localStorage.getItem("analytics23v2")||"null")||init;
+function saveLocal(){localStorage.setItem("analytics23v2",JSON.stringify(state))}
+document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));$(btn.dataset.tab).classList.add("active");$("pageTitle").textContent=btn.textContent.replace(/[🏛🔥🔎📈🧠⚙️❔🔌]/g,"").trim()+" Analytics 23";render()}));
+function saveConfig(){state.scriptUrl=$("scriptUrl").value.trim();state.week=+$("week").value||state.week;state.dateStart=$("dateStart").value||state.dateStart;state.dateEnd=$("dateEnd").value||state.dateEnd;saveLocal();alert("Настройки сохранены")}
+function normOrg(x){x=String(x||"").toLowerCase().replace(/ё/g,"е").trim();if(["пра-во","право","правительство"].includes(x))return"Правительство";if(x.includes("фсб")||x.includes("уфсб"))return"ФСБ";if(x.includes("мвд")&&x.includes("ю"))return"МВД Южный";if(x.includes("мвд")&&x.includes("а"))return"МВД Арзамас";if(x==="вч"||x.includes("воин"))return"ВЧ";if(x.includes("мз")&&x.includes("ю"))return"МЗ Южный";if(x.includes("мз")&&x.includes("а"))return"МЗ Арзамас";if(x.includes("сми")||x.includes("новост"))return"СМИ";return null}
+function normMetric(x){x=String(x||"").toLowerCase().replace(/ё/g,"е");if(x.includes("лидер"))return"leaderPoints";if(x.includes("сс")||x.includes("старш"))return"staffPoints";if(x.includes("онлайн"))return"online";if(x.includes("собес"))return"interviews";if(x.includes("принят"))return"recruits";if(x.includes("увол"))return"fired";if(x.includes("жалоб"))return"complaints";if(x.includes("наказ"))return"punish";if(x.includes("мер"))return"events";return null}
+async function syncFromSheet(){saveConfig();if(!state.scriptUrl){alert("Вставь Apps Script Web App URL");return}try{const res=await fetch(state.scriptUrl+(state.scriptUrl.includes("?")?"&":"?")+"t="+Date.now());if(!res.ok)throw new Error("Apps Script не ответил");const json=await res.json();if(json.error)throw new Error(json.error);const data=emptyData();let loaded=0;for(const r of (json.rows||[])){const org=normOrg(r["Организация"]||r["organization"]||r[0]),met=normMetric(r["Показатель"]||r["metric"]||r[1]);if(!org||!met)continue;DAYS.forEach(d=>{data[org][d][met]=Number(String(r[d]??0).replace(",","."))||0});loaded++}state.data=data;saveLocal();render();alert("Синхронизировано строк: "+loaded)}catch(e){alert("Ошибка синхронизации: "+e.message)}}
+function dayPoints(o,d){const x=state.data[o][d];return Number(x.leaderPoints||0)+Number(x.staffPoints||0)}
+function sumOrg(o){const s={leaderPoints:0,staffPoints:0,points:0,online:0,interviews:0,recruits:0,fired:0,complaints:0,punish:0,events:0};DAYS.forEach(d=>{s.leaderPoints+=Number(state.data[o][d].leaderPoints||0);s.staffPoints+=Number(state.data[o][d].staffPoints||0);["online","interviews","recruits","fired","complaints","punish","events"].forEach(k=>s[k]+=Number(state.data[o][d][k]||0));});s.points=s.leaderPoints+s.staffPoints;return s}
+function dailyTotal(d,k){return ORGS.reduce((a,o)=>a+(k==="points"?dayPoints(o,d):Number(state.data[o][d][k]||0)),0)}
+function pct(o){return Math.round(sumOrg(o).points/(state.norms[o]||1)*100)}function dailyNorm(o){return (state.norms[o]||0)/7}function dayPct(o,d){return Math.round(dayPoints(o,d)/(dailyNorm(o)||1)*100)}
+function badge(p){return p>=120?"b-green":p>=100?"b-yellow":p>=80?"b-orange":"b-red"}function status(p){return p>=120?"🟢":p>=100?"🟡":p>=80?"🟠":"🔴"}function heatClass(p,points){if(points<=0)return"h-zero"; if(p>=100)return"h-good"; if(p>=80)return"h-norm"; if(p>=50)return"h-warn"; return"h-bad"}function orgLabel(o,short=false){return `<span class="orglabel" title="${o}" style="color:${COLORS[o]};border-color:${COLORS[o]}55;background:${COLORS[o]}18"><span class="dot" style="background:${COLORS[o]}"></span>${short?SHORT[o]:o}</span>`}function bar(v,c,max=120){return `<div class="progress"><i style="width:${Math.min(100,v/max*100)}%;background:${c}"></i></div>`}
+function prevWeekOrgPct(o){const h=state.history||[];if(!h.length)return null;const prev=h.filter(x=>x.week!==state.week).at(-1);return prev && prev.orgs && prev.orgs[o] ? prev.orgs[o].pct : null}
+function deltaHTML(o,current){const prev=prevWeekOrgPct(o);if(prev===null)return `<span class="delta flat">new</span>`;const d=current-prev;return `<span class="delta ${d>0?'up':d<0?'down':'flat'}">${d>0?'▲ +':d<0?'▼ ':''}${d}%</span>`}
+function healthStatus(avg){if(avg>=115)return ["Отличное состояние","ГОС-сектор перевыполняет норму. Главная задача — удержать темп и не перегрузить сильные организации.","b-green"];if(avg>=95)return ["Стабильное состояние","Сектор находится около рабочей нормы. Нужны точечные решения по слабым фракциям.","b-yellow"];if(avg>=70)return ["Зона риска","Есть системные просадки. Требуется контроль лидеров, старшего состава и ежедневных провалов.","b-orange"];return ["Критическая зона","Нормы фактически не закрываются. Нужен оперативный разбор структуры активности и причин ухода игроков.","b-red"]}
+function sortedOrgs(){return ORGS.map(o=>({o,s:sumOrg(o),p:pct(o)})).sort((a,b)=>b.p-a.p)}
+function bestWorst(){const rows=sortedOrgs();return {top:rows[0],low:rows.at(-1),rows}}
+function factorScore(o){const s=sumOrg(o),p=pct(o),dayOk=DAYS.filter(d=>dayPct(o,d)>=100).length,dayBad=DAYS.filter(d=>dayPct(o,d)<50&&dayPoints(o,d)>0).length;return {
+  norm:p,
+  leader:s.points?Math.round(s.leaderPoints/s.points*100):0,
+  staff:s.points?Math.round(s.staffPoints/s.points*100):0,
+  days:Math.round(dayOk/7*100),
+  discipline:Math.max(0,100-(s.complaints*12+s.punish*8)),
+  retention:s.recruits?Math.max(0,Math.round((1-s.fired/Math.max(1,s.recruits))*100)):100,
+  dayBad
+}}
+
+function render(){ $("period").textContent=`23 сервер · Неделя ${state.week} · ${state.dateStart} — ${state.dateEnd}`;renderKpis();renderCards();renderSummary();renderHeatmap();renderWhy();renderAlerts();renderNorms();renderCompare();drawAll();$("scriptUrl").value=state.scriptUrl||"";$("week").value=state.week;$("dateStart").value=state.dateStart;$("dateEnd").value=state.dateEnd}
+function renderKpis(){
+const avg=Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),points=ORGS.reduce((s,o)=>s+sumOrg(o).points,0),leader=ORGS.reduce((s,o)=>s+sumOrg(o).leaderPoints,0),staff=ORGS.reduce((s,o)=>s+sumOrg(o).staffPoints,0),bw=bestWorst(),top=bw.top,low=bw.low;
+const hs=healthStatus(avg);
+$("heroHealth").innerHTML=`<div class="hero-title">Здоровье ГОС-сектора 23 сервера</div><div class="hero-score">${avg}%</div><div class="hero-note">${hs[1]}</div><div style="margin-top:14px"><span class="badge ${hs[2]}">${hs[0]}</span></div>`;
+$("heroExecutive").innerHTML=`<div class="hero-title">Руководительская сводка</div><div class="insight-list"><div class="insight-mini">Лидер недели: ${orgLabel(top.o)} — <b>${top.p}%</b>.</div><div class="insight-mini">Главная просадка: ${orgLabel(low.o)} — <b>${low.p}%</b>.</div><div class="insight-mini">Фокус: ${low.p<80?'разбор просадки и ежедневных провалов':'удержание темпа и контроль перегруза'}.</div></div>`;
+const arr=[["Средний индекс",avg+"%","здоровье ГОС-сектора"],["Баллы ГОС",points,"лидер + СС"],["Баллы лидеров",leader,"вклад лидеров"],["Баллы СС",staff,"вклад старшего состава"],["Лидер недели",SHORT[top.o],top.p+"%"],["Просадка недели",SHORT[low.o],low.p+"%"],["Жалобы",ORGS.reduce((s,o)=>s+sumOrg(o).complaints,0),"за неделю"],["Мероприятия",ORGS.reduce((s,o)=>s+sumOrg(o).events,0),"за неделю"]];
+$("kpis").innerHTML=arr.map(x=>`<div class="panel kpi"><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="note">${x[2]}</div></div>`).join("");
+renderRankingCards();
+}
+function renderRankingCards(){
+  const rows=sortedOrgs();
+  $("rankingCards").innerHTML=rows.map((r,i)=>`<div class="rank-card"><div class="rank-num">#${i+1}</div><div><div class="rank-name" style="color:${COLORS[r.o]}">${SHORT[r.o]}</div><div class="rank-meta">Баллы ${r.s.points} · лидер ${r.s.leaderPoints} · СС ${r.s.staffPoints}</div></div><div class="progress"><i style="width:${Math.min(100,r.p)}%;background:${COLORS[r.o]}"></i></div><div class="rank-score">${r.p}% ${deltaHTML(r.o,r.p)}</div></div>`).join("");
+}
+function renderCards(){$("cards").innerHTML=ORGS.map(o=>{const s=sumOrg(o),p=pct(o),c=COLORS[o];return `<div class="panel orgcard"><div class="orghead"><div class="orgname"><span class="stripe" style="background:${c}"></span><span>${SHORT[o]}</span></div><div class="score" style="color:${c}">${p}%</div></div><div class="metric"><span>Баллы</span>${bar(p,c)}<b>${s.points}</b></div><div class="metric"><span>Лидер</span>${bar(s.leaderPoints,c,Math.max(1,s.points))}<b>${s.leaderPoints}</b></div><div class="metric"><span>СС</span>${bar(s.staffPoints,c,Math.max(1,s.points))}<b>${s.staffPoints}</b></div><div class="metric"><span>День</span>${bar(100,c)}<b>${Math.round(dailyNorm(o))}</b></div></div>`}).join("")}
+function renderSummary(){const h=["#","Организация","Индекс","Статус","Баллы","Лидер","СС","Норма","День","Онлайн","Собесы","Принято","Уволено","Жалобы","Наказ.","Мер."];const rows=ORGS.map(o=>({o,s:sumOrg(o),p:pct(o)})).sort((a,b)=>b.p-a.p);$("summaryTable").innerHTML=`<tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>`+rows.map((r,i)=>`<tr><td>${i+1}</td><td>${orgLabel(r.o)}</td><td><span class="badge ${badge(r.p)}">${r.p}%</span></td><td>${status(r.p)}</td><td>${r.s.points}</td><td>${r.s.leaderPoints}</td><td>${r.s.staffPoints}</td><td>${state.norms[r.o]}</td><td>${Math.round(dailyNorm(r.o))}</td><td>${r.s.online}</td><td>${r.s.interviews}</td><td>${r.s.recruits}</td><td>${r.s.fired}</td><td>${r.s.complaints}</td><td>${r.s.punish}</td><td>${r.s.events}</td></tr>`).join("")}
+function renderHeatmap(){
+let h=`<tr><th>Организация</th><th>Норма дня</th>${DAYS.map(d=>`<th>${d}</th>`).join("")}<th>Неделя</th></tr>`;
+h+=ORGS.map(o=>`<tr><td>${orgLabel(o)}</td><td>${Math.round(dailyNorm(o))}</td>${DAYS.map(d=>{const points=dayPoints(o,d),p=dayPct(o,d);return `<td><div class="heatcell ${heatClass(p,points)}">${points}<br><span style="font-size:12px">${p}%</span></div></td>`}).join("")}<td><span class="badge ${badge(pct(o))}">${pct(o)}%</span></td></tr>`).join("");
+$("heatTable").innerHTML=h;
+renderHeatMatrix();
+}
+function renderHeatMatrix(){
+  const head=`<div class="heat-row"><div></div>${DAYS.map(d=>`<div class="heat-dayhead">${d}</div>`).join("")}<div class="heat-dayhead">Итог</div></div>`;
+  const rows=ORGS.map(o=>`<div class="heat-row"><div class="heat-label" style="color:${COLORS[o]}">${SHORT[o]}</div>${DAYS.map(d=>{const points=dayPoints(o,d),p=dayPct(o,d);return `<div class="heat-square ${heatClass(p,points)}" title="${o} · ${d}: ${points} баллов · ${p}%">${p}%</div>`}).join("")}<div class="badge ${badge(pct(o))}">${pct(o)}%</div></div>`).join("");
+  $("heatMatrix").innerHTML=head+rows;
+}
+function renderWhy(){
+$("whyWrap").innerHTML=ORGS.map(o=>{
+  const s=sumOrg(o),p=pct(o),c=COLORS[o],f=factorScore(o);
+  const factors=[
+    ["Выполнение нормы",f.norm,"%","plus"],
+    ["Вклад лидера",f.leader,"%","plus"],
+    ["Вклад СС",f.staff,"%","plus"],
+    ["Стабильность дней",f.days,"%",f.days>=70?"plus":"minus"],
+    ["Дисциплина",f.discipline,"%",f.discipline>=80?"plus":"minus"],
+    ["Удержание",f.retention,"%",f.retention>=70?"plus":"minus"]
+  ];
+  return `<div class="panel index-card"><h3><span><span class="stripe" style="background:${c};display:inline-block;vertical-align:middle"></span> ${o}</span><span class="badge ${badge(p)}">${p}%</span></h3>
+  ${factors.map(x=>`<div class="factor"><b>${x[0]}</b><div class="factorbar"><i style="width:${Math.min(100,Math.max(0,x[1]))}%;background:${x[3]==='plus'?'var(--good)':'var(--bad)'}"></i></div><b class="${x[3]}">${x[1]}${x[2]}</b></div>`).join("")}
+  <p class="small">${explain(p,s)}</p></div>`
+}).join("");
+}
+function explain(p,s){if(p>=120)return"Сильное перевыполнение: организацию можно использовать как пример практик.";if(p>=100)return"Норма выполнена: важно удержать темп и не перегрузить старший состав.";if(p>=80)return"Небольшое недовыполнение: требуется точечная корректировка по дням и распределению задач.";return"Критическое недовыполнение: нужен разбор лидера, старшего состава и причин отсутствия активности."}
+function renderAlerts(){
+const rows=sortedOrgs(),top=rows[0],low=rows.at(-1),bestDay=DAYS.map(d=>({d,points:dailyTotal(d,"points")})).sort((a,b)=>b.points-a.points)[0],worstDay=DAYS.map(d=>({d,points:dailyTotal(d,"points")})).sort((a,b)=>a.points-b.points)[0],complaints=[...rows].sort((a,b)=>b.s.complaints-a.s.complaints)[0],fired=[...rows].sort((a,b)=>b.s.fired-a.s.fired)[0];
+let worstHeat=[];ORGS.forEach(o=>DAYS.forEach(d=>{const points=dayPoints(o,d),p=dayPct(o,d);if(points>0&&p<50)worstHeat.push(`${SHORT[o]} ${d} — ${p}%`)}));
+const cards=[
+  ["🟢 Что хорошо",`Лучшее выполнение нормы показывает ${orgLabel(top.o)} — <b>${top.p}%</b>. Сильный день недели: <b>${bestDay.d}</b> (${bestDay.points} баллов).`],
+  ["🟡 Что просело",`Слабейшая организация недели: ${orgLabel(low.o)} — <b>${low.p}%</b>. Самый слабый день: <b>${worstDay.d}</b> (${worstDay.points} баллов).`],
+  ["🔴 Риски",`Больше всего жалоб: ${orgLabel(complaints.o)} — <b>${complaints.s.complaints}</b>. Больше всего увольнений: ${orgLabel(fired.o)} — <b>${fired.s.fired}</b>.`],
+  ["⭐ Что сделать завтра", low.p<80?`Провести разбор ${orgLabel(low.o)}: проверить вклад лидера/СС, дни провала и причины недобора баллов.`:`Закрепить сильные практики ${orgLabel(top.o)} и не поднимать нормы резко без учета специфики организаций.`],
+  ["🔥 Дневные провалы", worstHeat.length?`Провалы ниже 50% дневной нормы: <b>${worstHeat.slice(0,8).join("; ")}</b>.`:`Критических дневных провалов по заполненным дням не найдено.`],
+  ["📌 Управленческий вывод",`Смотреть не только итоговый индекс, но и структуру: если баллы держит только лидер — организация нестабильна; если работает СС — фракция здоровее.`]
+];
+$("alerts").innerHTML=cards.map(c=>`<div class="ai-card"><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join("");
+}
+function renderNorms(){$("normsTable").innerHTML="<tr><th>Организация</th><th>Норма недели</th><th>Норма дня</th><th>Факт недели</th><th>Выполнение</th></tr>"+ORGS.map(o=>`<tr><td>${orgLabel(o)}</td><td><input type="number" value="${state.norms[o]}" onchange="state.norms['${o}']=+this.value;saveLocal();render()"></td><td>${Math.round(dailyNorm(o))}</td><td>${sumOrg(o).points}</td><td>${pct(o)}%</td></tr>`).join("")}
+function saveWeek(){const snap={week:state.week,dateStart:state.dateStart,dateEnd:state.dateEnd,avg:Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),orgs:{}};ORGS.forEach(o=>snap.orgs[o]={pct:pct(o),...sumOrg(o)});state.history=state.history.filter(h=>h.week!==state.week);state.history.push(snap);state.history.sort((a,b)=>a.week-b.week);saveLocal();render();alert("Неделя сохранена в историю")}
+function renderCompare(){
+const h=state.history||[];
+if(!h.length){$("compareTable").innerHTML="<tr><td>История пока пуста. Нажми «Сохранить неделю» после синхронизации.</td></tr>";$("compareCards").innerHTML="";return}
+const last=h.at(-1),prev=h.length>1?h.at(-2):null;
+const avgDelta=prev?last.avg-prev.avg:0;
+const bestGrowth=prev?ORGS.map(o=>({o,d:(last.orgs[o]?.pct||0)-(prev.orgs[o]?.pct||0)})).sort((a,b)=>b.d-a.d)[0]:null;
+const worstDrop=prev?ORGS.map(o=>({o,d:(last.orgs[o]?.pct||0)-(prev.orgs[o]?.pct||0)})).sort((a,b)=>a.d-b.d)[0]:null;
+$("compareCards").innerHTML=[
+  ["Текущий средний индекс",last.avg+"%",prev?`${avgDelta>=0?"+":""}${avgDelta}% к прошлой неделе`:"нет прошлой недели"],
+  ["Лучший рост",bestGrowth?SHORT[bestGrowth.o]:"—",bestGrowth?`${bestGrowth.d>=0?"+":""}${bestGrowth.d}%`:"—"],
+  ["Главное падение",worstDrop?SHORT[worstDrop.o]:"—",worstDrop?`${worstDrop.d>=0?"+":""}${worstDrop.d}%`:"—"],
+  ["Сохранено недель",h.length,"история в браузере"]
+].map(x=>`<div class="panel compare-card"><div class="compare-title">${x[0]}</div><div class="compare-big">${x[1]}</div><div class="compare-sub">${x[2]}</div></div>`).join("");
+$("compareTable").innerHTML="<tr><th>Организация</th><th>Прошлая</th><th>Текущая</th><th>Изменение</th></tr>"+ORGS.map(o=>{const cur=last.orgs[o]?.pct||0,pr=prev?(prev.orgs[o]?.pct||0):0,d=prev?cur-pr:0;return`<tr><td>${orgLabel(o)}</td><td>${prev?pr+"%":"—"}</td><td>${cur}%</td><td><span class="badge ${d>=0?'b-green':'b-red'}">${prev?(d>0?"+":"")+d+"%":"—"}</span></td></tr>`}).join("");
+}
+function recalcNorms(){ORGS.forEach(o=>state.norms[o]=Math.round(sumOrg(o).points*1.1));saveLocal();render();alert("Нормы пересчитаны")}function copyNorms(){const text=`Нормы ГОС на неделю ${state.week}\n`+ORGS.map(o=>`${o}: ${state.norms[o]} баллов / ${Math.round(dailyNorm(o))} в день`).join("\n");navigator.clipboard.writeText(text).then(()=>alert("Нормы скопированы"))}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}function drawBars(id,data,max=100){const cv=$(id);if(!cv)return;const ctx=cv.getContext("2d"),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);const left=320,right=90,row=(H-70)/Math.max(data.length,1),barH=26;ctx.textBaseline="middle";data.forEach((x,i)=>{const y=38+i*row;ctx.fillStyle=x.color;ctx.font="700 25px -apple-system,Segoe UI,Arial";ctx.fillText(x.name,28,y+barH/2);ctx.fillStyle="rgba(255,255,255,.09)";roundRect(ctx,left,y,W-left-right,barH,13);ctx.fill();ctx.fillStyle=x.color;roundRect(ctx,left,y,Math.max(5,(W-left-right)*x.val/max),barH,13);ctx.fill();ctx.fillStyle="#F7F8FC";ctx.font="800 24px -apple-system,Segoe UI,Arial";ctx.fillText(Math.round(x.val),W-60,y+barH/2)});ctx.textBaseline="alphabetic"}
+function drawHistory(){const cv=$("chartHistory");if(!cv)return;const ctx=cv.getContext("2d"),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);const h=state.history;const vals=h.length?h.map(x=>x.avg):[0];drawBars("chartHistory",h.length?h.map(x=>({name:"Нед. "+x.week,val:x.avg,color:"#38BDF8"})):[{name:"нет истории",val:0,color:"#38BDF8"}],Math.max(120,...vals))}
+function drawAll(){drawBars("chartNorm",ORGS.map(o=>({name:o,val:pct(o),color:COLORS[o]})),Math.max(120,...ORGS.map(o=>pct(o))));drawBars("chartDailyPoints",DAYS.map(d=>({name:d,val:dailyTotal(d,"points"),color:"#38BDF8"})),Math.max(10,...DAYS.map(d=>dailyTotal(d,"points"))));drawHistory()}
+function exportPNG(){
+const W=1900,H=2400,pad=70,canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");
+const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,"#0B1426");grad.addColorStop(.55,"#07101F");grad.addColorStop(1,"#101827");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+ctx.fillStyle="#F7F8FC";ctx.font="800 58px -apple-system,Segoe UI,Arial";ctx.fillText("Analytics 23 — Weekly Executive Report",pad,90);
+ctx.fillStyle="#A6B0C3";ctx.font="27px -apple-system,Segoe UI,Arial";ctx.fillText(`Grand Mobile · 23 Server · Week ${state.week} · ${state.dateStart} — ${state.dateEnd}`,pad,136);
+ctx.fillStyle="#7FA8D8";ctx.font="22px -apple-system,Segoe UI,Arial";ctx.fillText("Created by John Lincoln",pad,170);
+const rows=sortedOrgs(),avg=Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),points=ORGS.reduce((s,o)=>s+sumOrg(o).points,0),leader=ORGS.reduce((s,o)=>s+sumOrg(o).leaderPoints,0),staff=ORGS.reduce((s,o)=>s+sumOrg(o).staffPoints,0),top=rows[0],low=rows.at(-1),complaints=ORGS.reduce((s,o)=>s+sumOrg(o).complaints,0),events=ORGS.reduce((s,o)=>s+sumOrg(o).events,0);
+const hs=healthStatus(avg);
+function card(x,y,w,h,title,value,note,color="#F7F8FC"){ctx.fillStyle="rgba(255,255,255,.075)";roundRect(ctx,x,y,w,h,24);ctx.fill();ctx.strokeStyle="rgba(255,255,255,.12)";ctx.stroke();ctx.fillStyle="#A6B0C3";ctx.font="800 21px -apple-system,Segoe UI,Arial";ctx.fillText(title,x+24,y+42);ctx.fillStyle=color;ctx.font="900 44px -apple-system,Segoe UI,Arial";ctx.fillText(String(value),x+24,y+98);ctx.fillStyle="#A6B0C3";ctx.font="21px -apple-system,Segoe UI,Arial";ctx.fillText(String(note),x+24,y+132)}
+const cw=(W-pad*2-40)/3;let y=220;
+[["Средний индекс",avg+"%",hs[0],"#F7F8FC"],["Баллы ГОС",points,"лидер + СС","#F7F8FC"],["Лидер недели",SHORT[top.o],top.p+"%"],["Баллы лидеров",leader,"вклад лидеров"],["Баллы СС",staff,"вклад СС"],["Жалобы / мероприятия",`${complaints} / ${events}`,"риски и активность"]].forEach((it,i)=>card(pad+(i%3)*(cw+20),y+Math.floor(i/3)*165,cw,145,it[0],it[1],it[2],it[3]||"#F7F8FC"));
+y=590;ctx.fillStyle="#F7F8FC";ctx.font="900 36px -apple-system,Segoe UI,Arial";ctx.fillText("Organization Ranking",pad,y);y+=42;
+rows.forEach((r,i)=>{const yy=y+i*58;ctx.fillStyle="rgba(255,255,255,.055)";roundRect(ctx,pad,yy,W-pad*2,48,16);ctx.fill();ctx.fillStyle="#F7F8FC";ctx.font="800 21px -apple-system,Segoe UI,Arial";ctx.fillText(`#${i+1}`,pad+18,yy+31);ctx.fillStyle=COLORS[r.o];ctx.font="900 22px -apple-system,Segoe UI,Arial";ctx.fillText(SHORT[r.o],pad+86,yy+31);ctx.fillStyle="rgba(255,255,255,.10)";roundRect(ctx,pad+260,yy+17,760,14,7);ctx.fill();ctx.fillStyle=COLORS[r.o];roundRect(ctx,pad+260,yy+17,Math.min(760,760*r.p/120),14,7);ctx.fill();ctx.fillStyle="#F7F8FC";ctx.font="800 22px -apple-system,Segoe UI,Arial";ctx.fillText(`${r.p}%`,pad+1050,yy+31);ctx.fillText(`Баллы ${r.s.points}`,pad+1170,yy+31);ctx.fillText(`Л ${r.s.leaderPoints}`,pad+1340,yy+31);ctx.fillText(`СС ${r.s.staffPoints}`,pad+1460,yy+31);ctx.fillText(`Ж ${r.s.complaints}`,pad+1600,yy+31)});
+y+=rows.length*58+60;ctx.fillStyle="#F7F8FC";ctx.font="900 36px -apple-system,Segoe UI,Arial";ctx.fillText("Weekly Heatmap",pad,y);y+=44;
+ctx.fillStyle="#A6B0C3";ctx.font="800 20px -apple-system,Segoe UI,Arial";DAYS.forEach((d,i)=>ctx.fillText(d,pad+230+i*190,y));y+=20;
+ORGS.forEach((o,ri)=>{const yy=y+ri*62;ctx.fillStyle=COLORS[o];ctx.font="900 21px -apple-system,Segoe UI,Arial";ctx.fillText(SHORT[o],pad,yy+34);DAYS.forEach((d,i)=>{const p=dayPct(o,d),points=dayPoints(o,d),x=pad+220+i*190;let fill=points<=0?"rgba(255,255,255,.10)":p>=100?"#34D399":p>=80?"#FACC15":p>=50?"#FB923C":"#FB7185";ctx.fillStyle=fill;roundRect(ctx,x,yy,130,42,14);ctx.fill();ctx.fillStyle=points<=0?"#A6B0C3":"#06101f";ctx.font="900 19px -apple-system,Segoe UI,Arial";ctx.fillText(`${p}%`,x+42,yy+27)})});
+y+=ORGS.length*62+70;ctx.fillStyle="#F7F8FC";ctx.font="900 36px -apple-system,Segoe UI,Arial";ctx.fillText("AI Summary",pad,y);y+=45;
+const summary=[`Лучшее выполнение: ${top.o} — ${top.p}%.`,`Главная просадка: ${low.o} — ${low.p}%.`,`Рекомендация: ${low.p<80?`провести разбор ${low.o}, проверить вклад лидера/СС и дневные провалы.`:`зафиксировать сильные практики и удерживать темп без резкого роста норм.`}`,`Фокус недели: смотреть структуру баллов, а не только итоговый индекс.`];
+summary.forEach((s,i)=>{ctx.fillStyle="rgba(255,255,255,.06)";roundRect(ctx,pad,y+i*70,W-pad*2,52,16);ctx.fill();ctx.fillStyle="#E9EEF8";ctx.font="24px -apple-system,Segoe UI,Arial";ctx.fillText("• "+s,pad+24,y+i*70+34)});
+y+=summary.length*70+70;ctx.fillStyle="#7FA8D8";ctx.font="22px -apple-system,Segoe UI,Arial";ctx.fillText("GosCore Analytics 23 · Created by John Lincoln · © 2026",pad,y);
+const a=document.createElement("a");a.download=`Analytics23_week_${state.week}_executive_report.png`;a.href=canvas.toDataURL("image/png");a.click()
+}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+render();
+</script>
+</body>
+</html>
