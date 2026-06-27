@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>GosCore Analytics 23 v4.0</title>
+<title>GosCore Analytics 23 v5.0</title>
 <meta name="theme-color" content="#070A13"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="Analytics 23"/>
@@ -34,25 +34,8 @@
 <section id="reports" class="section"><div class="panel tablewrap"><h3>Выгрузка PNG-отчётов</h3><p class="small">Неделя — для общего собрания. День — для ежедневного контроля после заполнения кураторами.</p><div class="report-tools"><div><label>День</label><select id="reportDay"><option value="ПН">ПН</option><option value="ВТ">ВТ</option><option value="СР">СР</option><option value="ЧТ">ЧТ</option><option value="ПТ">ПТ</option><option value="СБ">СБ</option><option value="ВС">ВС</option></select></div><div><label>Недельный отчёт</label><button class="btn primary" onclick="exportWeeklyPNG()">Скачать PNG недели</button></div><div><label>Ежедневный отчёт</label><button class="btn primary" onclick="exportDailyPNG($('reportDay').value)">Скачать PNG дня</button></div><div><label>Текущий день</label><button class="btn" onclick="$('reportDay').value=currentDayCode();exportDailyPNG(currentDayCode())">PNG сегодня</button></div></div><div class="formula">Ежедневный отчёт использует выбранную колонку ПН/ВТ/СР/ЧТ/ПТ/СБ/ВС и показывает все показатели за конкретный день: баллы, лидер, СС, онлайн, наборы, принято, уволено, жалобы, предупреждения, выговоры, дисциплинарный риск, мероприятия.</div></div></section>
 <section id="settings" class="section"><div class="panel tablewrap"><h3>Нормы баллов</h3><p class="small">Нормы задаются индивидуально для каждой организации.</p><table id="normsTable"></table><br><button class="btn primary" onclick="recalcNorms()">Нормы = факт недели × 1.10</button><button class="btn" onclick="copyNorms()">Скопировать нормы</button></div></section>
 <section id="sync" class="section"><div class="panel tablewrap"><h3>Синхронизация с Google Sheet</h3><p class="small">Кураторы заполняют закрытый лист общей таблицы. Сайт читает его через Apps Script.</p><div class="weekline"><div style="grid-column:1/4"><label>Apps Script Web App URL</label><input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec?app=analytics23"></div><div><label>Действие</label><button class="btn primary" onclick="syncFromSheet()">Синхронизировать</button></div></div><div class="weekline"><div><label>Неделя</label><input id="week" type="number"></div><div><label>Начало</label><input id="dateStart" type="date"></div><div><label>Конец</label><input id="dateEnd" type="date"></div><div><label>Сохранить</label><button class="btn" onclick="saveConfig()">Сохранить настройки</button></div></div><div class="weekline"><div style="grid-column:1/4"><label>Google Spreadsheet ID — необязательно</label><input id="sheetId" placeholder="Если нужно читать другую таблицу, вставь ID из ссылки Google Sheets"></div><div><label>Применить</label><button class="btn" onclick="saveConfig()">Сохранить ID</button></div></div><div class="formula">Формат листа: Организация | Показатель | ПН | ВТ | СР | ЧТ | ПТ | СБ | ВС<br>Показатели: Баллы лидер, Баллы СС, Онлайн, Наборы/Собесы, Принято, Уволено, Жалобы, Предупреждения, Выговоры, Мероприятия<br><b>Важно:</b> организация может быть указана только в первой строке блока — сайт сам запоминает последнюю организацию.</div></div></section>
-<section id="help" class="section"><div class="helpGrid"><div class="panel helpBox"><h3>Как пользоваться</h3><ol><li>Кураторы заполняют лист <b>Статистика ГОС</b> в Google-таблице.</li><li>Руководитель открывает Analytics 23 и нажимает «Синхронизировать».</li><li>Смотрит рейтинг, тепловую карту, причины индекса и выводы.</li><li>Для ежедневной сводки: «Отчёты PNG» → выбрать день → скачать PNG.</li></ol></div><div class="panel helpBox">
-  <h3>Как считается индекс</h3>
-
-  <div class="formula">
-База = (Баллы лидер + Баллы СС) / Норма × 100%
-
-Итоговый индекс =
-База
-− Жалобы × 2
-− Предупреждения × 4
-− Выговоры × 6
-  </div>
-
-  <p class="small">
-    Норма считается только по баллам. Онлайн, наборы, принято, уволено и мероприятия не повышают индекс напрямую, но помогают понять качество работы организации.
-    Жалобы, предупреждения и выговоры снижают индекс как дисциплинарные факторы.
-  </p>
-</div><div class="panel helpBox"><h3>Цвета тепловой карты</h3><div class="formula">🟢 100%+<br>🟡 80–99%<br>🟠 50–79%<br>🔴 1–49%<br>Серый — 0</div></div><div class="panel helpBox"><h3>Версия</h3><p class="small">Analytics 23 v4.0. Добавлены предупреждения, выговоры, дисциплинарный риск, влияние дисциплины на индекс, ежедневные и недельные PNG-отчёты, поддержка любой Google-таблицы через Spreadsheet ID.</p></div></div></section>
-<footer class="goscore-footer"><div class="footer-brand"><div><div class="footer-title"><span class="footer-star">✦</span><span class="footer-name">GosCore by John Lincoln</span></div><div class="footer-subtitle">Analytics 23 • Grand Mobile • 23 Server</div></div><div class="footer-badge">Version 4.0</div></div><div class="footer-modules">Modules: Analytics 23 • Leader Control • Discord Moderation • GosPay • GosPortal • Profiles • Awards • Archive</div><div class="footer-contacts"><span class="footer-pill">Telegram: @fireflywhy</span><span class="footer-pill">Discord: @geo_lincoln</span></div><div class="footer-copy">Created by John Lincoln. © 2026</div></footer>
+<section id="help" class="section"><div class="helpGrid"><div class="panel helpBox"><h3>Как пользоваться</h3><ol><li>Кураторы заполняют лист <b>Статистика ГОС</b> в Google-таблице.</li><li>Руководитель открывает Analytics 23 и нажимает «Синхронизировать».</li><li>Смотрит рейтинг, тепловую карту, причины индекса и выводы.</li><li>Для ежедневной сводки: «Отчёты PNG» → выбрать день → скачать PNG.</li></ol></div><div class="panel helpBox"><h3>Как считается индекс</h3><div class="formula">База = (Баллы лидер + Баллы СС) / Норма × 100%<br>Индекс = База − Жалобы ×2 − Предупреждения ×4 − Выговоры ×6<br>Норма считается только по баллам. Дисциплина снижает итоговый индекс напрямую.</div><p class="small">Онлайн, наборы, увольнения, жалобы, предупреждения, выговоры и мероприятия не входят в балльную норму, но жалобы, предупреждения и выговоры снижают итоговый индекс.</p></div><div class="panel helpBox"><h3>Цвета тепловой карты</h3><div class="formula">🟢 100%+<br>🟡 80–99%<br>🟠 50–79%<br>🔴 1–49%<br>Серый — 0</div></div><div class="panel helpBox"><h3>Версия</h3><p class="small">Analytics 23 v5.0. Жалобы, предупреждения и выговоры считаются отдельно и напрямую снижают индекс. Убрано общее поле «Наказания».</p></div></div></section>
+<footer class="goscore-footer"><div class="footer-brand"><div><div class="footer-title"><span class="footer-star">✦</span><span class="footer-name">GosCore by John Lincoln</span></div><div class="footer-subtitle">Analytics 23 • Grand Mobile • 23 Server</div></div><div class="footer-badge">Version 5.0</div></div><div class="footer-modules">Modules: Analytics 23 • Leader Control • Discord Moderation • GosPay • GosPortal • Profiles • Awards • Archive</div><div class="footer-contacts"><span class="footer-pill">Telegram: @fireflywhy</span><span class="footer-pill">Discord: @geo_lincoln</span></div><div class="footer-copy">Created by John Lincoln. © 2026</div></footer>
 </main></div>
 <script>
 const ORGS=["Правительство","ФСБ","МВД Южный","МВД Арзамас","ВЧ","МЗ Арзамас","МЗ Южный","СМИ"],DAYS=["ПН","ВТ","СР","ЧТ","ПТ","СБ","ВС"],COLORS={"Правительство":"#FACC15","ФСБ":"#A855F7","МВД Южный":"#38BDF8","МВД Арзамас":"#38BDF8","ВЧ":"#84CC16","МЗ Арзамас":"#FB7185","МЗ Южный":"#FB7185","СМИ":"#FB923C"},SHORT={"Правительство":"Пра-во","ФСБ":"ФСБ","МВД Южный":"МВД Ю","МВД Арзамас":"МВД А","ВЧ":"ВЧ","МЗ Арзамас":"МЗ-А","МЗ Южный":"МЗ-Ю","СМИ":"СМИ"},baseNorms={"Правительство":950,"ФСБ":2200,"МВД Южный":1700,"МВД Арзамас":1550,"ВЧ":700,"МЗ Арзамас":700,"МЗ Южный":700,"СМИ":800},$=id=>document.getElementById(id);
@@ -60,7 +43,7 @@ const METRICS=[["leaderPoints","Баллы лидер"],["staffPoints","Балл
 function weekBounds(d=new Date()){const x=new Date(d),day=x.getDay()||7,mon=new Date(x);mon.setDate(x.getDate()-day+1);const sun=new Date(mon);sun.setDate(mon.getDate()+6);const f=a=>a.toISOString().slice(0,10);return[f(mon),f(sun)]}
 function getISOWeek(d=new Date()){const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const dayNum=date.getUTCDay()||7;date.setUTCDate(date.getUTCDate()+4-dayNum);const yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));return Math.ceil((((date-yearStart)/86400000)+1)/7)}
 function emptyData(){const data={};ORGS.forEach(o=>{data[o]={};DAYS.forEach(day=>{data[o][day]={};METRICS.forEach(([k])=>data[o][day][k]=0)})});return data}
-const [ds,de]=weekBounds();const init={week:getISOWeek(),dateStart:ds,dateEnd:de,norms:{...baseNorms},data:emptyData(),scriptUrl:"",sheetId:"",history:[]};let state=JSON.parse(localStorage.getItem("analytics23v40")||"null")||init;function saveLocal(){localStorage.setItem("analytics23v40",JSON.stringify(state))}
+const [ds,de]=weekBounds();const init={week:getISOWeek(),dateStart:ds,dateEnd:de,norms:{...baseNorms},data:emptyData(),scriptUrl:"",sheetId:"",history:[]};let state=JSON.parse(localStorage.getItem("analytics23v50")||"null")||init;function saveLocal(){localStorage.setItem("analytics23v50",JSON.stringify(state))}
 document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));$(btn.dataset.tab).classList.add("active");$("pageTitle").textContent=btn.textContent.replace(/[🏛🔥🔎📈🧠⚙️❔🔌🖼]/g,"").trim()+" Analytics 23";render()}));
 function saveConfig(){
   state.scriptUrl=$("scriptUrl").value.trim();
@@ -94,51 +77,19 @@ function normOrg(x){
   return null
 }
 function normMetric(x){
-    x=normalizeText(x);
-    if(!x) return null;
-
-    if(x.includes("баллы") && x.includes("лидер"))
-        return "leaderPoints";
-
-    if(
-        x==="баллы сс" ||
-        x.includes("баллы сс") ||
-        x.includes("старший состав") ||
-        x.includes("баллы старшего")
-    )
-        return "staffPoints";
-
-    if(x.includes("онлайн"))
-        return "online";
-
-    if(x.includes("собес") || x.includes("набор"))
-        return "interviews";
-
-    if(x.includes("принято"))
-        return "recruits";
-
-    if(x.includes("увол"))
-        return "fired";
-
-    if(x.includes("жалоб"))
-        return "complaints";
-
-    if(
-        x.includes("предупреж")
-    )
-        return "warnings";
-
-    if(
-        x.includes("выговор")
-    )
-        return "reprimands";
-
-    if(
-        x.includes("мероприят")
-    )
-        return "events";
-
-    return null;
+  x=normalizeText(x);
+  if(!x)return null;
+  if(x.includes("баллы")&&x.includes("лидер"))return"leaderPoints";
+  if(x==="баллы сс"||x.includes("баллы сс")||x.includes("баллы старш")||x.includes("старший состав")||x.includes("старшего состава"))return"staffPoints";
+  if(x.includes("онлайн")||x.includes("online"))return"online";
+  if(x.includes("собес")||x.includes("набор"))return"interviews";
+  if(x.includes("принято")||x.includes("принят")||x.includes("приняли"))return"recruits";
+  if(x.includes("уволено")||x.includes("увол"))return"fired";
+  if(x.includes("жалоба")||x.includes("жалобы")||x.includes("жалоб"))return"complaints";
+  if(x.includes("предупреж")||x==="пред"||x.includes("пред."))return"warnings";
+  if(x.includes("выговор")||x==="выг"||x.includes("выг."))return"reprimands";
+  if(x.includes("мероприятие")||x.includes("мероприятия")||x==="мер"||x.includes("мер."))return"events";
+  return null
 }
 function dayAliases(d){return {"ПН":["ПН","Пн","пн","Понедельник","понедельник","Monday","Mon"],"ВТ":["ВТ","Вт","вт","Вторник","вторник","Tuesday","Tue"],"СР":["СР","Ср","ср","Среда","среда","Wednesday","Wed"],"ЧТ":["ЧТ","Чт","чт","Четверг","четверг","Thursday","Thu"],"ПТ":["ПТ","Пт","пт","Пятница","пятница","Friday","Fri"],"СБ":["СБ","Сб","сб","Суббота","суббота","Saturday","Sat"],"ВС":["ВС","Вс","вс","Воскресенье","воскресенье","Sunday","Sun"]}[d]||[d]}
 function readDayValue(row,d){return rowGet(row,dayAliases(d))}
@@ -168,21 +119,13 @@ async function syncFromSheet(){
       const metricRaw=rowGet(r,["Показатель","metric","показатели","тип","название показателя"]);
       const met=normMetric(metricRaw);
       if(!org||!met){if(metricRaw)missed.push(metricRaw);continue}
-    DAYS.forEach(d=>{
-
-    const value = num(readDayValue(r,d));
-
-    data[org][d][met] = value;
-
-    if(met==="warnings"){
-        data[org][d].__filled_warnings = true;
-    }
-
-    if(met==="reprimands"){
-        data[org][d].__filled_reprimands = true;
-    }
-
-});
+      DAYS.forEach(d=>{
+        const raw=readDayValue(r,d);
+        if(raw!==undefined && raw!==null && String(raw).trim()!==""){
+          data[org][d][met]=num(raw);
+          data[org][d]["__filled_"+met]=true;
+        }
+      });
       loaded++;
     }
     state.data=data;
@@ -192,18 +135,16 @@ async function syncFromSheet(){
   }catch(e){alert("Ошибка синхронизации: "+e.message)}
 }
 function showDayDetail(o,d){
-  const x=dayOrg(o,d),p=dayPct(o,d);
- alert(
-`${o} · ${d}
+  const x=dayOrg(o,d),base=dayPct(o,d),final=dayRating(o,d);
+  alert(`${o} · ${d}
 
-Зона: ${zone(p)[0]}
-${p}%
+База дня: ${base}%
+Итог дня: ${final}%
+Зона: ${zone(final)[0]}
 
 Баллы: ${x.points}
-
 Лидер: ${x.leaderPoints}
 СС: ${x.staffPoints}
-
 Норма дня: ${Math.round(dailyNorm(o))}
 
 Онлайн: ${x.online}
@@ -212,161 +153,100 @@ ${p}%
 Уволено: ${x.fired}
 
 Жалобы: ${x.complaints}
-
 Предупреждения: ${x.warnings}
 Выговоры: ${x.reprimands}
+Штраф дня: ${x.disciplinePenalty} п.п.
 
-Дисциплинарный риск: ${x.disciplineRisk}%
-
-Мероприятия: ${x.events}`
-);
+Мероприятия: ${x.events}`);
 }
-function dayPoints(o,d){const x=state.data[o][d];return Number(x.leaderPoints||0)+Number(x.staffPoints||0)}
+function dayPoints(o,d){const x=state.data[o]?.[d]||{};return Number(x.leaderPoints||0)+Number(x.staffPoints||0)}
 function currentDiscipline(o){
-  for(let i=DAYS.length-1;i>=0;i--){
-    const d=DAYS[i],x=state.data[o][d]||{};
-    if(x.__filled_warnings||x.__filled_reprimands){
-      const warnings=Number(x.warnings||0),reprimands=Number(x.reprimands||0);
-      const points=warnings+reprimands*2;
-      const risk=Math.min(100,Math.round(points/6*100));
-      return {warnings,reprimands,points,risk,day:d};
-    }
-  }
-  const warnings=DAYS.reduce((m,d)=>Math.max(m,Number(state.data[o][d].warnings||0)),0);
-  const reprimands=DAYS.reduce((m,d)=>Math.max(m,Number(state.data[o][d].reprimands||0)),0);
-  const points=warnings+reprimands*2;
-  return {warnings,reprimands,points,risk:Math.min(100,Math.round(points/6*100)),day:"—"};
+  let warnings=0,reprimands=0,complaints=0;
+  DAYS.forEach(d=>{
+    const x=state.data[o]?.[d]||{};
+    warnings+=Number(x.warnings||0);
+    reprimands+=Number(x.reprimands||0);
+    complaints+=Number(x.complaints||0);
+  });
+  const penalty=complaints*2+warnings*4+reprimands*6;
+  const index=Math.max(0,100-penalty);
+  return {warnings,reprimands,complaints,penalty,index,risk:penalty,day:"week"};
 }
 function indexPenalty(o){
-
-    const s=sumOrg(o);
-
-    return (
-        s.complaints*2 +
-        s.warnings*4 +
-        s.reprimands*6
-    );
-
+  const s=sumOrg(o);
+  return s.complaints*2+s.warnings*4+s.reprimands*6;
 }
 function basePct(o){return Math.round(sumOrg(o).points/(state.norms[o]||1)*100)}
+function disciplineIndex(o){return Math.max(0,100-indexPenalty(o))}
 function sumOrg(o){
-  const s={leaderPoints:0,staffPoints:0,points:0,online:0,interviews:0,recruits:0,fired:0,complaints:0,warnings:0,reprimands:0,punish:0,disciplineRisk:0,events:0};
-  DAYS.forEach(d=>{s.leaderPoints+=Number(state.data[o][d].leaderPoints||0);s.staffPoints+=Number(state.data[o][d].staffPoints||0);["online","interviews","recruits","fired","complaints","events"].forEach(k=>s[k]+=Number(state.data[o][d][k]||0));});
-  const disc=currentDiscipline(o);
-  s.warnings=disc.warnings;s.reprimands=disc.reprimands;s.punish=disc.points;s.disciplineRisk=disc.risk;s.disciplineDay=disc.day;
+  const s={leaderPoints:0,staffPoints:0,points:0,online:0,interviews:0,recruits:0,fired:0,complaints:0,warnings:0,reprimands:0,disciplinePenalty:0,disciplineIndex:100,disciplineRisk:0,events:0};
+  DAYS.forEach(d=>{
+    const x=state.data[o]?.[d]||{};
+    s.leaderPoints+=Number(x.leaderPoints||0);
+    s.staffPoints+=Number(x.staffPoints||0);
+    s.online+=Number(x.online||0);
+    s.interviews+=Number(x.interviews||0);
+    s.recruits+=Number(x.recruits||0);
+    s.fired+=Number(x.fired||0);
+    s.complaints+=Number(x.complaints||0);
+    s.warnings+=Number(x.warnings||0);
+    s.reprimands+=Number(x.reprimands||0);
+    s.events+=Number(x.events||0);
+  });
   s.points=s.leaderPoints+s.staffPoints;
+  s.disciplinePenalty=s.complaints*2+s.warnings*4+s.reprimands*6;
+  s.disciplineIndex=Math.max(0,100-s.disciplinePenalty);
+  s.disciplineRisk=s.disciplinePenalty;
   return s
 }
 function dayOrg(o,d){
-  const x=state.data[o][d];
-  const warnings=Number(x.warnings||0),reprimands=Number(x.reprimands||0),risk=Math.min(100,Math.round((warnings+reprimands*2)/6*100));
-  return {leaderPoints:Number(x.leaderPoints||0),staffPoints:Number(x.staffPoints||0),points:dayPoints(o,d),online:Number(x.online||0),interviews:Number(x.interviews||0),recruits:Number(x.recruits||0),fired:Number(x.fired||0),complaints:Number(x.complaints||0),warnings,reprimands,punish:warnings+reprimands*2,disciplineRisk:risk,events:Number(x.events||0)}
+  const x=state.data[o]?.[d]||{};
+  const complaints=Number(x.complaints||0),warnings=Number(x.warnings||0),reprimands=Number(x.reprimands||0);
+  const disciplinePenalty=complaints*2+warnings*4+reprimands*6;
+  return {leaderPoints:Number(x.leaderPoints||0),staffPoints:Number(x.staffPoints||0),points:dayPoints(o,d),online:Number(x.online||0),interviews:Number(x.interviews||0),recruits:Number(x.recruits||0),fired:Number(x.fired||0),complaints,warnings,reprimands,disciplinePenalty,disciplineIndex:Math.max(0,100-disciplinePenalty),disciplineRisk:disciplinePenalty,events:Number(x.events||0)}
 }
-function dailyTotal(d,k){return ORGS.reduce((a,o)=>a+(k==="points"?dayPoints(o,d):Number(state.data[o][d][k]||0)),0)}function pct(o){
-
-    const base = basePct(o);
-
-    const s = sumOrg(o);
-
-    const penalty =
-        s.complaints*2 +
-        s.warnings*4 +
-        s.reprimands*6;
-
-    return Math.max(0,Math.round(base-penalty));
-
-}function dailyNorm(o){return (state.norms[o]||0)/7}function dayPct(o,d){return Math.round(dayPoints(o,d)/(dailyNorm(o)||1)*100)}
+function dailyTotal(d,k){return ORGS.reduce((a,o)=>a+(k==="points"?dayPoints(o,d):Number((state.data[o]?.[d]||{})[k]||0)),0)}
+function pct(o){return Math.max(0,Math.round(basePct(o)-indexPenalty(o)))}
+function dailyNorm(o){return (state.norms[o]||0)/7}
+function dayPct(o,d){return Math.round(dayPoints(o,d)/(dailyNorm(o)||1)*100)}
+function dayRating(o,d){const x=dayOrg(o,d);return Math.max(0,Math.round(dayPct(o,d)-x.disciplinePenalty))}
 function zone(p){if(p>=115)return["Прорыв","b-green","#34D399"];if(p>=100)return["Норма","b-green","#34D399"];if(p>=80)return["Риск","b-yellow","#FACC15"];if(p>=60)return["Просадка","b-orange","#FB923C"];return["Критично","b-red","#FB7185"]}function badge(p){return zone(p)[1]}function heatClass(p,points){if(points<=0)return"h-zero"; if(p>=100)return"h-good"; if(p>=80)return"h-norm"; if(p>=50)return"h-warn"; return"h-bad"}function orgLabel(o,short=false){return `<span class="orglabel" title="${o}" style="color:${COLORS[o]};border-color:${COLORS[o]}55;background:${COLORS[o]}18"><span class="dot" style="background:${COLORS[o]}"></span>${short?SHORT[o]:o}</span>`}
 function prevWeekOrgPct(o){const h=state.history||[];if(!h.length)return null;const prev=h.filter(x=>x.week!==state.week).at(-1);return prev&&prev.orgs&&prev.orgs[o]?prev.orgs[o].pct:null}function deltaHTML(o,current){const prev=prevWeekOrgPct(o);if(prev===null)return `<span class="delta flat">new</span>`;const d=current-prev;return `<span class="delta ${d>0?'up':d<0?'down':'flat'}">${d>0?'▲ +':d<0?'▼ ':''}${d}%</span>`}
-function healthStatus(avg){if(avg>=115)return["Отличное состояние","ГОС-сектор перевыполняет норму. Главная задача — удержать темп и не перегрузить сильные организации.","b-green"];if(avg>=95)return["Стабильное состояние","Сектор находится около рабочей нормы. Нужны точечные решения по слабым фракциям.","b-yellow"];if(avg>=70)return["Зона риска","Есть системные просадки. Требуется контроль лидеров, старшего состава и ежедневных провалов.","b-orange"];return["Критическая зона","Нормы фактически не закрываются. Нужен оперативный разбор структуры активности и причин ухода игроков.","b-red"]}function sortedOrgs(){return ORGS.map(o=>({o,s:sumOrg(o),p:pct(o)})).sort((a,b)=>b.p-a.p)}function sortedDayOrgs(d){return ORGS.map(o=>({o,s:dayOrg(o,d),p:dayPct(o,d)})).sort((a,b)=>b.p-a.p)}function bestWorst(){const rows=sortedOrgs();return{top:rows[0],low:rows.at(-1),rows}}function factorScore(o){
-  const s=sumOrg(o),p=pct(o),dayOk=DAYS.filter(d=>dayPct(o,d)>=100).length,disc=currentDiscipline(o);
-  return{norm:p,base:basePct(o),penalty:indexPenalty(o),leader:s.points?Math.round(s.leaderPoints/s.points*100):0,staff:s.points?Math.round(s.staffPoints/s.points*100):0,days:Math.round(dayOk/7*100),discipline:Math.max(0,100-disc.risk),disciplineRisk:disc.risk,retention:s.recruits?Math.max(0,Math.round((1-s.fired/Math.max(1,s.recruits))*100)):100}
+function healthStatus(avg){if(avg>=115)return["Отличное состояние","ГОС-сектор перевыполняет норму. Главная задача — удержать темп и не перегрузить сильные организации.","b-green"];if(avg>=95)return["Стабильное состояние","Сектор находится около рабочей нормы. Нужны точечные решения по слабым фракциям.","b-yellow"];if(avg>=70)return["Зона риска","Есть системные просадки. Требуется контроль лидеров, старшего состава и ежедневных провалов.","b-orange"];return["Критическая зона","Нормы фактически не закрываются. Нужен оперативный разбор структуры активности и причин ухода игроков.","b-red"]}function sortedOrgs(){return ORGS.map(o=>({o,s:sumOrg(o),p:pct(o)})).sort((a,b)=>b.p-a.p)}function sortedDayOrgs(d){return ORGS.map(o=>({o,s:dayOrg(o,d),p:dayRating(o,d),base:dayPct(o,d)})).sort((a,b)=>b.p-a.p)}function bestWorst(){const rows=sortedOrgs();return{top:rows[0],low:rows.at(-1),rows}}function factorScore(o){
+  const s=sumOrg(o),p=pct(o),dayOk=DAYS.filter(d=>dayRating(o,d)>=100).length;
+  return{norm:p,base:basePct(o),penalty:indexPenalty(o),leader:s.points?Math.round(s.leaderPoints/s.points*100):0,staff:s.points?Math.round(s.staffPoints/s.points*100):0,days:Math.round(dayOk/7*100),discipline:s.disciplineIndex,disciplineRisk:s.disciplinePenalty,retention:s.recruits?Math.max(0,Math.round((1-s.fired/Math.max(1,s.recruits))*100)):100}
 }function currentDayCode(){return DAYS[(new Date().getDay()+6)%7]}
 function render(){ $("period").textContent=`23 сервер · Неделя ${state.week} · ${state.dateStart} — ${state.dateEnd}`;renderKpis();renderSummary();renderHeatmap();renderWhy();renderAlerts();renderNorms();renderCompare();drawAll();$("scriptUrl").value=state.scriptUrl||"";$("week").value=state.week;$("dateStart").value=state.dateStart;$("dateEnd").value=state.dateEnd;if($("sheetId"))$("sheetId").value=state.sheetId||"";if($("reportDay"))$("reportDay").value=$("reportDay").value||currentDayCode()}
-function renderKpis(){const avg=Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),points=ORGS.reduce((s,o)=>s+sumOrg(o).points,0),leader=ORGS.reduce((s,o)=>s+sumOrg(o).leaderPoints,0),staff=ORGS.reduce((s,o)=>s+sumOrg(o).staffPoints,0),bw=bestWorst(),top=bw.top,low=bw.low,hs=healthStatus(avg);$("heroHealth").innerHTML=`<div class="hero-title">Здоровье ГОС-сектора 23 сервера</div><div class="hero-score">${avg}%</div><div class="hero-note">${hs[1]}</div><div style="margin-top:14px"><span class="badge ${hs[2]}">${hs[0]}</span></div>`;$("heroExecutive").innerHTML=`<div class="hero-title">Руководительская сводка</div><div class="insight-list"><div class="insight-mini">Лидер недели: ${orgLabel(top.o)} — <b>${top.p}%</b>.</div><div class="insight-mini">Главная просадка: ${orgLabel(low.o)} — <b>${low.p}%</b>.</div><div class="insight-mini">Фокус: ${low.p<80?'разбор просадки и ежедневных провалов':'удержание темпа и контроль перегруза'}.</div></div>`;const arr=[["Средний индекс",avg+"%","здоровье ГОС-сектора"],["Баллы ГОС",points,"лидер + СС"],["Баллы лидеров",leader,"вклад лидеров"],["Баллы СС",staff,"вклад старшего состава"],["Лидер недели",SHORT[top.o],top.p+"%"],["Просадка недели",SHORT[low.o],low.p+"%"],["Жалобы",ORGS.reduce((s,o)=>s+sumOrg(o).complaints,0),"за неделю"],["Дисциплина",Math.round(ORGS.reduce((s,o)=>s+sumOrg(o).disciplineRisk,0)/ORGS.length)+"%","средний риск"],["Мероприятия",ORGS.reduce((s,o)=>s+sumOrg(o).events,0),"за неделю"]];$("kpis").innerHTML=arr.map(x=>`<div class="panel kpi"><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="note">${x[2]}</div></div>`).join("");renderRankingCards()}
+function renderKpis(){const avg=Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),points=ORGS.reduce((s,o)=>s+sumOrg(o).points,0),leader=ORGS.reduce((s,o)=>s+sumOrg(o).leaderPoints,0),staff=ORGS.reduce((s,o)=>s+sumOrg(o).staffPoints,0),bw=bestWorst(),top=bw.top,low=bw.low,hs=healthStatus(avg);$("heroHealth").innerHTML=`<div class="hero-title">Здоровье ГОС-сектора 23 сервера</div><div class="hero-score">${avg}%</div><div class="hero-note">${hs[1]}</div><div style="margin-top:14px"><span class="badge ${hs[2]}">${hs[0]}</span></div>`;$("heroExecutive").innerHTML=`<div class="hero-title">Руководительская сводка</div><div class="insight-list"><div class="insight-mini">Лидер недели: ${orgLabel(top.o)} — <b>${top.p}%</b>.</div><div class="insight-mini">Главная просадка: ${orgLabel(low.o)} — <b>${low.p}%</b>.</div><div class="insight-mini">Фокус: ${low.p<80?'разбор просадки и ежедневных провалов':'удержание темпа и контроль перегруза'}.</div></div>`;const arr=[["Средний индекс",avg+"%","здоровье ГОС-сектора"],["Баллы ГОС",points,"лидер + СС"],["Баллы лидеров",leader,"вклад лидеров"],["Баллы СС",staff,"вклад старшего состава"],["Лидер недели",SHORT[top.o],top.p+"%"],["Просадка недели",SHORT[low.o],low.p+"%"],["Жалобы",ORGS.reduce((s,o)=>s+sumOrg(o).complaints,0),"за неделю"],["Штраф дисциплины",Math.round(ORGS.reduce((s,o)=>s+sumOrg(o).disciplinePenalty,0)/ORGS.length)+" п.п.","средний штраф"],["Мероприятия",ORGS.reduce((s,o)=>s+sumOrg(o).events,0),"за неделю"]];$("kpis").innerHTML=arr.map(x=>`<div class="panel kpi"><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="note">${x[2]}</div></div>`).join("");renderRankingCards()}
 function renderRankingCards(){const rows=sortedOrgs();$("rankingCards").innerHTML=rows.map((r,i)=>`<div class="rank-card"><div class="rank-num">#${i+1}</div><div><div class="rank-name" style="color:${COLORS[r.o]}">${SHORT[r.o]}</div><div class="rank-meta">Баллы ${r.s.points} · лидер ${r.s.leaderPoints} · СС ${r.s.staffPoints} · онлайн ${r.s.online} · наборы ${r.s.interviews} · пред. ${r.s.warnings} · выг. ${r.s.reprimands}</div></div><div class="progress"><i style="width:${Math.min(100,r.p)}%;background:${zone(r.p)[2]}"></i></div><div class="rank-score">${r.p}% ${deltaHTML(r.o,r.p)}</div></div>`).join("")}
-function renderSummary(){const h=["#","Организация","Индекс","База","Штраф","Зона","Баллы","Лидер","СС","Норма","День","Онлайн","Наборы","Принято","Уволено","Жалобы","Пред.","Выг.","Риск","Мер."];const rows=sortedOrgs();$("summaryTable").innerHTML=`<tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>`+rows.map((r,i)=>`<tr><td>${i+1}</td><td>${orgLabel(r.o)}</td><td><span class="badge ${badge(r.p)}">${r.p}%</span></td><td>${basePct(r.o)}%</td><td>−${indexPenalty(r.o)}%</td><td>${zone(r.p)[0]}</td><td>${r.s.points}</td><td>${r.s.leaderPoints}</td><td>${r.s.staffPoints}</td><td>${state.norms[r.o]}</td><td>${Math.round(dailyNorm(r.o))}</td><td>${r.s.online}</td><td>${r.s.interviews}</td><td>${r.s.recruits}</td><td>${r.s.fired}</td><td>${r.s.complaints}</td><td>${r.s.warnings}</td><td>${r.s.reprimands}</td><td>${r.s.disciplineRisk}%</td><td>${r.s.events}</td></tr>`).join("")}
-function renderHeatmap(){let h=`<tr><th>Организация</th><th>Норма дня</th>${DAYS.map(d=>`<th>${d}</th>`).join("")}<th>Неделя</th></tr>`;h+=ORGS.map(o=>`<tr><td>${orgLabel(o)}</td><td>${Math.round(dailyNorm(o))}</td>${DAYS.map(d=>{const points=dayPoints(o,d),p=dayPct(o,d);return `<td><div class="heatcell ${heatClass(p,points)}">${points}<br><span style="font-size:12px">${p}%</span></div></td>`}).join("")}<td><span class="badge ${badge(pct(o))}">${pct(o)}%</span></td></tr>`).join("");$("heatTable").innerHTML=h;const head=`<div class="heat-row"><div></div>${DAYS.map(d=>`<div class="heat-dayhead">${d}</div>`).join("")}<div class="heat-dayhead">Итог</div></div>`;const rows=ORGS.map(o=>`<div class="heat-row"><div class="heat-label" style="color:${COLORS[o]}">${SHORT[o]}</div>${DAYS.map(d=>{const points=dayPoints(o,d),p=dayPct(o,d);return `<div class="heat-square ${heatClass(p,points)}" onclick="showDayDetail(\`${o}\`,\`${d}\`)" title="${o} · ${d}: ${points} баллов · ${p}%">${p}%</div>`}).join("")}<div class="badge ${badge(pct(o))}">${pct(o)}%</div></div>`).join("");$("heatMatrix").innerHTML=head+rows}
-function renderWhy(){$("whyWrap").innerHTML=ORGS.map(o=>{const s=sumOrg(o),p=pct(o),c=COLORS[o],f=factorScore(o),const factors=[
-
-["Выполнение нормы",f.norm,"%","plus"],
-
-["Вклад лидера",f.leader,"%","plus"],
-
-["Вклад СС",f.staff,"%","plus"],
-
-["Стабильность дней",f.days,"%","plus"],
-
-["Жалобы",sumOrg(o).complaints*2," п.п.","minus"],
-
-["Предупреждения",sumOrg(o).warnings*4," п.п.","minus"],
-
-["Выговоры",sumOrg(o).reprimands*6," п.п.","minus"],
-
-["Удержание",f.retention,"%","plus"]
-
-];return `<div class="panel index-card"><h3><span><span class="stripe" style="background:${c};display:inline-block;vertical-align:middle"></span> ${o}</span><span class="badge ${badge(p)}">${p}%</span></h3>${factors.map(x=>`<div class="factor"><b>${x[0]}</b><div class="factorbar"><i style="width:${Math.min(100,Math.max(0,x[1]))}%;background:${x[3]==='plus'?'var(--good)':'var(--bad)'}"></i></div><b class="${x[3]}">${x[1]}${x[2]}</b></div>`).join("")}<p class="small">${explain(p,s)}</p></div>`}).join("")}function explain(p,s){if(p>=120)return"Сильное перевыполнение: организацию можно использовать как пример практик.";if(p>=100)return"Норма выполнена: важно удержать темп и не перегрузить старший состав.";if(p>=80)return"Небольшое недовыполнение: требуется точечная корректировка по дням и распределению задач.";return"Критическое недовыполнение: нужен разбор лидера, старшего состава и причин отсутствия активности."}
-function renderAlerts(){const rows=sortedOrgs(),top=rows[0],low=rows.at(-1),bestDay=DAYS.map(d=>({d,points:dailyTotal(d,"points")})).sort((a,b)=>b.points-a.points)[0],worstDay=DAYS.map(d=>({d,points:dailyTotal(d,"points")})).sort((a,b)=>a.points-b.points)[0],complaints=[...rows].sort((a,b)=>b.s.complaints-a.s.complaints)[0],fired=[...rows].sort((a,b)=>b.s.fired-a.s.fired)[0];let worstHeat=[];ORGS.forEach(o=>DAYS.forEach(d=>{const points=dayPoints(o,d),p=dayPct(o,d);if(points>0&&p<50)worstHeat.push(`${SHORT[o]} ${d} — ${p}%`)}));const cards=[["🟢 Что хорошо",`Лучшее выполнение нормы показывает ${orgLabel(top.o)} — <b>${top.p}%</b>. Сильный день недели: <b>${bestDay.d}</b> (${bestDay.points} баллов).`],["🟡 Что просело",`Слабейшая организация недели: ${orgLabel(low.o)} — <b>${low.p}%</b>. Самый слабый день: <b>${worstDay.d}</b> (${worstDay.points} баллов).`],["🔴 Риски",`Больше всего жалоб: ${orgLabel(complaints.o)} — <b>${complaints.s.complaints}</b>. Дисциплинарный риск учитывает предупреждения и выговоры: 2 предупреждения = 1 выговор, 3 выговора = критический предел.`],["⭐ Что сделать завтра", low.p<80?`Провести разбор ${orgLabel(low.o)}: проверить вклад лидера/СС, дни провала и причины недобора баллов.`:`Закрепить сильные практики ${orgLabel(top.o)} и не поднимать нормы резко без учета специфики организаций.`],["🔥 Дневные провалы", worstHeat.length?`Провалы ниже 50% дневной нормы: <b>${worstHeat.slice(0,8).join("; ")}</b>.`:`Критических дневных провалов по заполненным дням не найдено.`],[
-"📌 Управленческий вывод",
-`При анализе организации оценивайте не только итоговый индекс.
-
-Обязательно учитывайте:
-
-• выполнение нормы;
-• вклад лидера;
-• вклад старшего состава;
-• жалобы;
-• предупреждения;
-• выговоры;
-• наборы;
-• увольнения;
-• мероприятия.
-
-Так гораздо легче понять настоящую причину падения индекса.`
-]];$("alerts").innerHTML=cards.map(c=>`<div class="ai-card"><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join("")}
+function renderSummary(){const h=["#","Организация","Индекс","База","Штраф","Зона","Баллы","Лидер","СС","Норма","День","Онлайн","Наборы","Принято","Уволено","Жалобы","Пред.","Выг.","Штраф","Мер."];const rows=sortedOrgs();$("summaryTable").innerHTML=`<tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>`+rows.map((r,i)=>`<tr><td>${i+1}</td><td>${orgLabel(r.o)}</td><td><span class="badge ${badge(r.p)}">${r.p}%</span></td><td>${basePct(r.o)}%</td><td>−${indexPenalty(r.o)}%</td><td>${zone(r.p)[0]}</td><td>${r.s.points}</td><td>${r.s.leaderPoints}</td><td>${r.s.staffPoints}</td><td>${state.norms[r.o]}</td><td>${Math.round(dailyNorm(r.o))}</td><td>${r.s.online}</td><td>${r.s.interviews}</td><td>${r.s.recruits}</td><td>${r.s.fired}</td><td>${r.s.complaints}</td><td>${r.s.warnings}</td><td>${r.s.reprimands}</td><td>${r.s.disciplineRisk}%</td><td>${r.s.events}</td></tr>`).join("")}
+function renderHeatmap(){let h=`<tr><th>Организация</th><th>Норма дня</th>${DAYS.map(d=>`<th>${d}</th>`).join("")}<th>Неделя</th></tr>`;h+=ORGS.map(o=>`<tr><td>${orgLabel(o)}</td><td>${Math.round(dailyNorm(o))}</td>${DAYS.map(d=>{const points=dayPoints(o,d),p=dayRating(o,d);return `<td><div class="heatcell ${heatClass(p,points)}">${points}<br><span style="font-size:12px">${p}%</span></div></td>`}).join("")}<td><span class="badge ${badge(pct(o))}">${pct(o)}%</span></td></tr>`).join("");$("heatTable").innerHTML=h;const head=`<div class="heat-row"><div></div>${DAYS.map(d=>`<div class="heat-dayhead">${d}</div>`).join("")}<div class="heat-dayhead">Итог</div></div>`;const rows=ORGS.map(o=>`<div class="heat-row"><div class="heat-label" style="color:${COLORS[o]}">${SHORT[o]}</div>${DAYS.map(d=>{const points=dayPoints(o,d),p=dayRating(o,d);return `<div class="heat-square ${heatClass(p,points)}" onclick="showDayDetail(\`${o}\`,\`${d}\`)" title="${o} · ${d}: ${points} баллов · ${p}%">${p}%</div>`}).join("")}<div class="badge ${badge(pct(o))}">${pct(o)}%</div></div>`).join("");$("heatMatrix").innerHTML=head+rows}
+function renderWhy(){$("whyWrap").innerHTML=ORGS.map(o=>{const s=sumOrg(o),p=pct(o),c=COLORS[o],f=factorScore(o),factors=[["Выполнение нормы",f.base,"%","plus"],["Итоговый индекс",f.norm,"%",f.norm>=80?"plus":"minus"],["Вклад лидера",f.leader,"%","plus"],["Вклад СС",f.staff,"%","plus"],["Стабильность дней",f.days,"%",f.days>=70?"plus":"minus"],["Жалобы",s.complaints*2," п.п.",s.complaints? "minus":"plus"],["Предупреждения",s.warnings*4," п.п.",s.warnings? "minus":"plus"],["Выговоры",s.reprimands*6," п.п.",s.reprimands? "minus":"plus"],["Удержание",f.retention,"%",f.retention>=70?"plus":"minus"]];return `<div class="panel index-card"><h3><span><span class="stripe" style="background:${c};display:inline-block;vertical-align:middle"></span> ${o}</span><span class="badge ${badge(p)}">${p}%</span></h3>${factors.map(x=>`<div class="factor"><b>${x[0]}</b><div class="factorbar"><i style="width:${Math.min(100,Math.max(0,x[1]))}%;background:${x[3]==='plus'?'var(--good)':'var(--bad)'}"></i></div><b class="${x[3]}">${x[1]}${x[2]}</b></div>`).join("")}<p class="small">${explain(p,s)}</p></div>`}).join("")}function explain(p,s){if(p>=120)return"Сильное перевыполнение: организацию можно использовать как пример практик.";if(p>=100)return"Норма выполнена: важно удержать темп и не перегрузить старший состав.";if(p>=80)return"Небольшое недовыполнение: требуется точечная корректировка по дням и распределению задач.";return"Критическое недовыполнение: нужен разбор лидера, старшего состава и причин отсутствия активности."}
+function renderAlerts(){
+  const rows=sortedOrgs(),top=rows[0],low=rows.at(-1);
+  const bestDay=DAYS.map(d=>({d,points:dailyTotal(d,"points")})).sort((a,b)=>b.points-a.points)[0];
+  const worstDay=DAYS.map(d=>({d,points:dailyTotal(d,"points")})).sort((a,b)=>a.points-b.points)[0];
+  const complaints=[...rows].sort((a,b)=>b.s.complaints-a.s.complaints)[0];
+  const discipline=[...rows].sort((a,b)=>b.s.disciplinePenalty-a.s.disciplinePenalty)[0];
+  let worstHeat=[];
+  ORGS.forEach(o=>DAYS.forEach(d=>{const points=dayPoints(o,d),p=dayRating(o,d);if(points>0&&p<50)worstHeat.push(`${SHORT[o]} ${d} — ${p}%`)}));
+  const cards=[
+    ["🟢 Что хорошо",`Лучшее выполнение показывает ${orgLabel(top.o)} — <b>${top.p}%</b>. Сильный день недели: <b>${bestDay.d}</b> (${bestDay.points} баллов).`],
+    ["🟡 Что просело",`Слабейшая организация недели: ${orgLabel(low.o)} — <b>${low.p}%</b>. Самый слабый день: <b>${worstDay.d}</b> (${worstDay.points} баллов).`],
+    ["🔴 Риски",`Больше всего жалоб: ${orgLabel(complaints.o)} — <b>${complaints.s.complaints}</b>.<br><br>Самый высокий штраф дисциплины: ${orgLabel(discipline.o)} — <b>${discipline.s.disciplinePenalty} п.п.</b>.<br><br>Формула штрафа: жалобы ×2, предупреждения ×4, выговоры ×6.`],
+    ["⭐ Что сделать завтра", low.p<80?`Провести разбор ${orgLabel(low.o)}: проверить вклад лидера/СС, дни провала, жалобы, предупреждения и выговоры.`:`Закрепить сильные практики ${orgLabel(top.o)} и удерживать темп без резкого роста норм.`],
+    ["🔥 Дневные провалы", worstHeat.length?`Провалы ниже 50% дневного индекса: <b>${worstHeat.slice(0,8).join("; ")}</b>.`:`Критических дневных провалов по заполненным дням не найдено.`],
+    ["📌 Управленческий вывод",`Итоговый индекс теперь считается просто: база по баллам минус дисциплинарный штраф. Баллы показывают работу, жалобы/предупреждения/выговоры показывают управленческий риск.`]
+  ];
+  $("alerts").innerHTML=cards.map(c=>`<div class="ai-card"><h4>${c[0]}</h4><p>${c[1]}</p></div>`).join("")
+}
 function renderNorms(){$("normsTable").innerHTML="<tr><th>Организация</th><th>Норма недели</th><th>Норма дня</th><th>Факт недели</th><th>Выполнение</th></tr>"+ORGS.map(o=>`<tr><td>${orgLabel(o)}</td><td><input type="number" value="${state.norms[o]}" onchange="state.norms['${o}']=+this.value;saveLocal();render()"></td><td>${Math.round(dailyNorm(o))}</td><td>${sumOrg(o).points}</td><td>${pct(o)}%</td></tr>`).join("")}
 function saveWeek(){const snap={week:state.week,dateStart:state.dateStart,dateEnd:state.dateEnd,avg:Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),orgs:{}};ORGS.forEach(o=>snap.orgs[o]={pct:pct(o),...sumOrg(o)});state.history=state.history.filter(h=>h.week!==state.week);state.history.push(snap);state.history.sort((a,b)=>a.week-b.week);saveLocal();render();alert("Неделя сохранена в историю")}
 function renderCompare(){const h=state.history||[];if(!h.length){$("compareTable").innerHTML="<tr><td>История пока пуста. Нажми «Сохранить неделю» после синхронизации.</td></tr>";$("compareCards").innerHTML="";return}const last=h.at(-1),prev=h.length>1?h.at(-2):null,avgDelta=prev?last.avg-prev.avg:0,bestGrowth=prev?ORGS.map(o=>({o,d:(last.orgs[o]?.pct||0)-(prev.orgs[o]?.pct||0)})).sort((a,b)=>b.d-a.d)[0]:null,worstDrop=prev?ORGS.map(o=>({o,d:(last.orgs[o]?.pct||0)-(prev.orgs[o]?.pct||0)})).sort((a,b)=>a.d-b.d)[0]:null;$("compareCards").innerHTML=[["Текущий средний индекс",last.avg+"%",prev?`${avgDelta>=0?"+":""}${avgDelta}% к прошлой неделе`:"нет прошлой недели"],["Лучший рост",bestGrowth?SHORT[bestGrowth.o]:"—",bestGrowth?`${bestGrowth.d>=0?"+":""}${bestGrowth.d}%`:"—"],["Главное падение",worstDrop?SHORT[worstDrop.o]:"—",worstDrop?`${worstDrop.d>=0?"+":""}${worstDrop.d}%`:"—"],["Сохранено недель",h.length,"история в браузере"]].map(x=>`<div class="panel compare-card"><div class="compare-title">${x[0]}</div><div class="compare-big">${x[1]}</div><div class="compare-sub">${x[2]}</div></div>`).join("");$("compareTable").innerHTML="<tr><th>Организация</th><th>Прошлая</th><th>Текущая</th><th>Изменение</th></tr>"+ORGS.map(o=>{const cur=last.orgs[o]?.pct||0,pr=prev?(prev.orgs[o]?.pct||0):0,d=prev?cur-pr:0;return`<tr><td>${orgLabel(o)}</td><td>${prev?pr+"%":"—"}</td><td>${cur}%</td><td><span class="badge ${d>=0?'b-green':'b-red'}">${prev?(d>0?"+":"")+d+"%":"—"}</span></td></tr>`}).join("")}
 function recalcNorms(){ORGS.forEach(o=>state.norms[o]=Math.round(sumOrg(o).points*1.1));saveLocal();render();alert("Нормы пересчитаны")}function copyNorms(){const text=`Нормы ГОС на неделю ${state.week}\n`+ORGS.map(o=>`${o}: ${state.norms[o]} баллов / ${Math.round(dailyNorm(o))} в день`).join("\n");navigator.clipboard.writeText(text).then(()=>alert("Нормы скопированы"))}
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}function drawBars(id,data,max=100){const cv=$(id);if(!cv)return;const ctx=cv.getContext("2d"),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);const left=320,right=90,row=(H-70)/Math.max(data.length,1),barH=26;ctx.textBaseline="middle";data.forEach((x,i)=>{const y=38+i*row;ctx.fillStyle=x.color;ctx.font="700 25px -apple-system,Segoe UI,Arial";ctx.fillText(x.name,28,y+barH/2);ctx.fillStyle="rgba(255,255,255,.09)";roundRect(ctx,left,y,W-left-right,barH,13);ctx.fill();ctx.fillStyle=x.color;roundRect(ctx,left,y,Math.max(5,(W-left-right)*x.val/max),barH,13);ctx.fill();ctx.fillStyle="#F7F8FC";ctx.font="800 24px -apple-system,Segoe UI,Arial";ctx.fillText(Math.round(x.val),W-60,y+barH/2)});ctx.textBaseline="alphabetic"}function drawHistory(){const h=state.history||[],vals=h.length?h.map(x=>x.avg):[0];drawBars("chartHistory",h.length?h.map(x=>({name:"Нед. "+x.week,val:x.avg,color:"#38BDF8"})):[{name:"нет истории",val:0,color:"#38BDF8"}],Math.max(120,...vals))}function drawAll(){drawBars("chartNorm",sortedOrgs().map(r=>({name:r.o,val:r.p,color:zone(r.p)[2]})),Math.max(120,...ORGS.map(o=>pct(o))));drawBars("chartDailyPoints",DAYS.map(d=>({name:d,val:dailyTotal(d,"points"),color:"#38BDF8"})),Math.max(10,...DAYS.map(d=>dailyTotal(d,"points"))));drawHistory()}
 function reportHeader(ctx,W,pad,title,subtitle){ctx.fillStyle="#F7F8FC";ctx.font="800 54px -apple-system,Segoe UI,Arial";ctx.fillText(title,pad,86);ctx.fillStyle="#A6B0C3";ctx.font="26px -apple-system,Segoe UI,Arial";ctx.fillText(subtitle,pad,130);ctx.fillStyle="#7FA8D8";ctx.font="21px -apple-system,Segoe UI,Arial";ctx.fillText("Created by John Lincoln",pad,164)}function reportCard(ctx,x,y,w,h,title,value,note,color="#F7F8FC"){ctx.fillStyle="rgba(255,255,255,.075)";roundRect(ctx,x,y,w,h,24);ctx.fill();ctx.strokeStyle="rgba(255,255,255,.12)";ctx.stroke();ctx.fillStyle="#A6B0C3";ctx.font="800 20px -apple-system,Segoe UI,Arial";ctx.fillText(title,x+24,y+40);ctx.fillStyle=color;ctx.font="900 42px -apple-system,Segoe UI,Arial";ctx.fillText(String(value),x+24,y+94);ctx.fillStyle="#A6B0C3";ctx.font="20px -apple-system,Segoe UI,Arial";ctx.fillText(String(note),x+24,y+128)}
-function exportWeeklyPNG(){const W=2100,H=2700,pad=70,canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,"#0B1426");grad.addColorStop(.55,"#07101F");grad.addColorStop(1,"#101827");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);reportHeader(ctx,W,pad,"Analytics 23 — недельный управленческий отчёт",`Grand Mobile · 23 сервер · Неделя ${state.week} · ${state.dateStart} — ${state.dateEnd}`);const rows=sortedOrgs(),avg=Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),points=ORGS.reduce((s,o)=>s+sumOrg(o).points,0),leader=ORGS.reduce((s,o)=>s+sumOrg(o).leaderPoints,0),staff=ORGS.reduce((s,o)=>s+sumOrg(o).staffPoints,0),top=rows[0],complaints=ORGS.reduce((s,o)=>s+sumOrg(o).complaints,0),events=ORGS.reduce((s,o)=>s+sumOrg(o).events,0);const cw=(W-pad*2-40)/3;let y=215;[["Средний индекс",avg+"%",healthStatus(avg)[0],zone(avg)[2]],["Баллы ГОС",points,"лидер + СС"],["Лидер недели",SHORT[top.o],top.p+"%"],["Баллы лидеров",leader,"вклад лидеров"],["Баллы СС",staff,"вклад СС"],["Дисциплина",Math.round(ORGS.reduce((s,o)=>s+sumOrg(o).disciplineRisk,0)/ORGS.length)+"%","средний риск"]].forEach((it,i)=>reportCard(ctx,pad+(i%3)*(cw+20),y+Math.floor(i/3)*160,cw,140,it[0],it[1],it[2],it[3]||"#F7F8FC"));y=570;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Рейтинг государственных организаций",pad,y);y+=44;const headers=["#","Орг","Инд.","База","Штраф","Зона","Баллы","Лидер","СС","Норма","Онлайн","Наб.","Прин.","Увол.","Пред.","Выг.","Риск","Мер."];const xs=[pad,pad+58,pad+155,pad+245,pad+330,pad+430,pad+545,pad+660,pad+775,pad+890,pad+1015,pad+1135,pad+1255,pad+1375,pad+1495,pad+1605,pad+1715,pad+1835];ctx.fillStyle="#A6B0C3";ctx.font="800 18px -apple-system,Segoe UI,Arial";headers.forEach((h,i)=>ctx.fillText(h,xs[i],y));y+=24;rows.forEach((r,i)=>{const yy=y+i*54,z=zone(r.p);ctx.fillStyle=i%2?"rgba(255,255,255,.04)":"rgba(255,255,255,.065)";roundRect(ctx,pad,yy,W-pad*2,45,14);ctx.fill();ctx.fillStyle=z[2]+"55";roundRect(ctx,pad,yy,12,45,6);ctx.fill();ctx.font="800 18px -apple-system,Segoe UI,Arial";[i+1,SHORT[r.o],r.p+"%",basePct(r.o)+"%","−"+indexPenalty(r.o)+"%",z[0],r.s.points,r.s.leaderPoints,r.s.staffPoints,state.norms[r.o],r.s.online,r.s.interviews,r.s.recruits,r.s.fired,r.s.warnings,r.s.reprimands,r.s.disciplineRisk+"%",r.s.events].forEach((v,j)=>{ctx.fillStyle=j==1?COLORS[r.o]:j==2?z[2]:"#F7F8FC";ctx.fillText(String(v),xs[j],yy+29)})});y+=rows.length*54+64;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Тепловая карта недели",pad,y);y+=46;ctx.fillStyle="#A6B0C3";ctx.font="800 20px -apple-system,Segoe UI,Arial";DAYS.forEach((d,i)=>ctx.fillText(d,pad+230+i*190,y));y+=20;ORGS.forEach((o,ri)=>{const yy=y+ri*62;ctx.fillStyle=COLORS[o];ctx.font="900 21px -apple-system,Segoe UI,Arial";ctx.fillText(SHORT[o],pad,yy+34);DAYS.forEach((d,i)=>{const p=dayPct(o,d),points=dayPoints(o,d),x=pad+220+i*190;let fill=points<=0?"rgba(255,255,255,.10)":p>=100?"#34D399":p>=80?"#FACC15":p>=50?"#FB923C":"#FB7185";ctx.fillStyle=fill;roundRect(ctx,x,yy,130,42,14);ctx.fill();ctx.fillStyle=points<=0?"#A6B0C3":"#06101f";ctx.font="900 19px -apple-system,Segoe UI,Arial";ctx.fillText(`${p}%`,x+42,yy+27)})});y+=ORGS.length*62+70;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Причины индекса и выводы",pad,y);y+=45;const low=rows.at(-1);const summary=[`Лучшее выполнение: ${top.o} — ${top.p}%.`,`Главная просадка: ${low.o} — ${low.p}%.`,`Рекомендация: ${low.p<80?`провести разбор ${low.o}, проверить вклад лидера/СС и дневные провалы.`:`зафиксировать сильные практики и удерживать темп без резкого роста норм.`}`,`Фокус недели: смотреть структуру баллов, наборы, увольнения и жалобы, а не только итоговый индекс.`];summary.forEach((s,i)=>{ctx.fillStyle="rgba(255,255,255,.06)";roundRect(ctx,pad,y+i*70,W-pad*2,52,16);ctx.fill();ctx.fillStyle="#E9EEF8";ctx.font="24px -apple-system,Segoe UI,Arial";ctx.fillText("• "+s,pad+24,y+i*70+34)});y+=summary.length*70+70;ctx.fillStyle="#7FA8D8";ctx.font="22px -apple-system,Segoe UI,Arial";ctx.fillText("GosCore Analytics 23 · Created by John Lincoln · © 2026",pad,y);const a=document.createElement("a");a.download=`Analytics23_week_${state.week}_report.png`;a.href=canvas.toDataURL("image/png");a.click()}
-function exportDailyPNG(day){day=day||currentDayCode();const W=2000,H=2050,pad=70,canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,"#0B1426");grad.addColorStop(.55,"#07101F");grad.addColorStop(1,"#101827");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);reportHeader(ctx,W,pad,`Analytics 23 — ежедневный отчёт ${day}`,`Grand Mobile · 23 сервер · Неделя ${state.week} · день ${day}`);const rows=sortedDayOrgs(day),totalPoints=rows.reduce((s,r)=>s+r.s.points,0),leader=rows.reduce((s,r)=>s+r.s.leaderPoints,0),staff=rows.reduce((s,r)=>s+r.s.staffPoints,0),online=rows.reduce((s,r)=>s+r.s.online,0),recruits=rows.reduce((s,r)=>s+r.s.recruits,0),events=rows.reduce((s,r)=>s+r.s.events,0),complaints=rows.reduce((s,r)=>s+r.s.complaints,0),avg=Math.round(rows.reduce((s,r)=>s+r.p,0)/rows.length),top=rows[0],low=rows.at(-1);const cw=(W-pad*2-40)/3;let y=215;[["Средний день-индекс",avg+"%",zone(avg)[0],zone(avg)[2]],["Баллы за день",totalPoints,"лидер + СС"],["Лидер дня",SHORT[top.o],top.p+"%"],["Баллы лидеров",leader,"за день"],["Баллы СС",staff,"за день"],["Онлайн / принято",`${online} / ${recruits}`,"сумма по ГОС"]].forEach((it,i)=>reportCard(ctx,pad+(i%3)*(cw+20),y+Math.floor(i/3)*160,cw,140,it[0],it[1],it[2],it[3]||"#F7F8FC"));y=570;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText(`Показатели организаций за ${day}`,pad,y);y+=44;const headers=[
-"#",
-"Орг",
-"День%",
-"Зона",
-"Баллы",
-"Лидер",
-"СС",
-"Норма",
-"Онлайн",
-"Наб.",
-"Прин.",
-"Увол.",
-"Жал.",
-"Пред.",
-"Выг.",
-"Риск",
-"Мер."
-];const xs=[
-pad,
-pad+60,
-pad+180,
-pad+310,
-pad+440,
-pad+570,
-pad+700,
-pad+830,
-pad+960,
-pad+1090,
-pad+1220,
-pad+1350,
-pad+1480,
-pad+1600,
-pad+1700,
-pad+1800,
-pad+1910
-];ctx.fillStyle="#A6B0C3";ctx.font="800 18px -apple-system,Segoe UI,Arial";headers.forEach((h,i)=>ctx.fillText(h,xs[i],y));y+=24;rows.forEach((r,i)=>{const yy=y+i*58,z=zone(r.p);ctx.fillStyle=i%2?"rgba(255,255,255,.04)":"rgba(255,255,255,.065)";roundRect(ctx,pad,yy,W-pad*2,48,14);ctx.fill();ctx.fillStyle=z[2]+"55";roundRect(ctx,pad,yy,12,48,6);ctx.fill();ctx.font="800 18px -apple-system,Segoe UI,Arial";[i+1,SHORT[r.o],r.p+"%",z[0],r.s.points,r.s.leaderPoints,r.s.staffPoints,Math.round(dailyNorm(r.o)),r.s.online,r.s.interviews,r.s.recruits,r.s.fired,r.s.complaints,r.s.warnings,r.s.reprimands,r.s.disciplineRisk+"%",r.s.events].forEach((v,j)=>{ctx.fillStyle=j==1?COLORS[r.o]:j==2?z[2]:"#F7F8FC";ctx.fillText(String(v),xs[j],yy+31)})});y+=rows.length*58+70;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Итоги дня",pad,y);y+=46;const summary=[`Лучший результат дня: ${top.o} — ${top.p}%.`,`Главная просадка дня: ${low.o} — ${low.p}%.`,`Всего мероприятий: ${events}. Жалоб: ${complaints}. Дисциплина: пред./выг. учитываются как текущий риск.`,`Рекомендация: ${low.p<80?`проверить, почему ${low.o} не закрывает дневную норму.`:`закрепить темп и не перегружать состав.`}`];summary.forEach((s,i)=>{ctx.fillStyle="rgba(255,255,255,.06)";roundRect(ctx,pad,y+i*70,W-pad*2,52,16);ctx.fill();ctx.fillStyle="#E9EEF8";ctx.font="24px -apple-system,Segoe UI,Arial";ctx.fillText("• "+s,pad+24,y+i*70+34)});y+=summary.length*70+70;ctx.fillStyle="#7FA8D8";ctx.font="22px -apple-system,Segoe UI,Arial";ctx.fillText("GosCore Analytics 23 · Daily Report · Created by John Lincoln · © 2026",pad,y);const a=document.createElement("a");a.download=`Analytics23_day_${day}_week_${state.week}.png`;a.href=canvas.toDataURL("image/png");a.click()}
+function exportWeeklyPNG(){const W=2100,H=2700,pad=70,canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,"#0B1426");grad.addColorStop(.55,"#07101F");grad.addColorStop(1,"#101827");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);reportHeader(ctx,W,pad,"Analytics 23 — недельный управленческий отчёт",`Grand Mobile · 23 сервер · Неделя ${state.week} · ${state.dateStart} — ${state.dateEnd}`);const rows=sortedOrgs(),avg=Math.round(ORGS.reduce((s,o)=>s+pct(o),0)/ORGS.length),points=ORGS.reduce((s,o)=>s+sumOrg(o).points,0),leader=ORGS.reduce((s,o)=>s+sumOrg(o).leaderPoints,0),staff=ORGS.reduce((s,o)=>s+sumOrg(o).staffPoints,0),top=rows[0],complaints=ORGS.reduce((s,o)=>s+sumOrg(o).complaints,0),events=ORGS.reduce((s,o)=>s+sumOrg(o).events,0);const cw=(W-pad*2-40)/3;let y=215;[["Средний индекс",avg+"%",healthStatus(avg)[0],zone(avg)[2]],["Баллы ГОС",points,"лидер + СС"],["Лидер недели",SHORT[top.o],top.p+"%"],["Баллы лидеров",leader,"вклад лидеров"],["Баллы СС",staff,"вклад СС"],["Штраф дисциплины",Math.round(ORGS.reduce((s,o)=>s+sumOrg(o).disciplinePenalty,0)/ORGS.length)+" п.п.","средний штраф"]].forEach((it,i)=>reportCard(ctx,pad+(i%3)*(cw+20),y+Math.floor(i/3)*160,cw,140,it[0],it[1],it[2],it[3]||"#F7F8FC"));y=570;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Рейтинг государственных организаций",pad,y);y+=44;const headers=["#","Орг","Инд.","База","Штраф","Зона","Баллы","Лидер","СС","Норма","Онлайн","Наб.","Прин.","Увол.","Пред.","Выг.","Штраф","Мер."];const xs=[pad,pad+58,pad+155,pad+245,pad+330,pad+430,pad+545,pad+660,pad+775,pad+890,pad+1015,pad+1135,pad+1255,pad+1375,pad+1495,pad+1605,pad+1715,pad+1835];ctx.fillStyle="#A6B0C3";ctx.font="800 18px -apple-system,Segoe UI,Arial";headers.forEach((h,i)=>ctx.fillText(h,xs[i],y));y+=24;rows.forEach((r,i)=>{const yy=y+i*54,z=zone(r.p);ctx.fillStyle=i%2?"rgba(255,255,255,.04)":"rgba(255,255,255,.065)";roundRect(ctx,pad,yy,W-pad*2,45,14);ctx.fill();ctx.fillStyle=z[2]+"55";roundRect(ctx,pad,yy,12,45,6);ctx.fill();ctx.font="800 18px -apple-system,Segoe UI,Arial";[i+1,SHORT[r.o],r.p+"%",basePct(r.o)+"%","−"+indexPenalty(r.o)+"%",z[0],r.s.points,r.s.leaderPoints,r.s.staffPoints,state.norms[r.o],r.s.online,r.s.interviews,r.s.recruits,r.s.fired,r.s.warnings,r.s.reprimands,r.s.disciplinePenalty,r.s.events].forEach((v,j)=>{ctx.fillStyle=j==1?COLORS[r.o]:j==2?z[2]:"#F7F8FC";ctx.fillText(String(v),xs[j],yy+29)})});y+=rows.length*54+64;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Тепловая карта недели",pad,y);y+=46;ctx.fillStyle="#A6B0C3";ctx.font="800 20px -apple-system,Segoe UI,Arial";DAYS.forEach((d,i)=>ctx.fillText(d,pad+230+i*190,y));y+=20;ORGS.forEach((o,ri)=>{const yy=y+ri*62;ctx.fillStyle=COLORS[o];ctx.font="900 21px -apple-system,Segoe UI,Arial";ctx.fillText(SHORT[o],pad,yy+34);DAYS.forEach((d,i)=>{const p=dayRating(o,d),points=dayPoints(o,d),x=pad+220+i*190;let fill=points<=0?"rgba(255,255,255,.10)":p>=100?"#34D399":p>=80?"#FACC15":p>=50?"#FB923C":"#FB7185";ctx.fillStyle=fill;roundRect(ctx,x,yy,130,42,14);ctx.fill();ctx.fillStyle=points<=0?"#A6B0C3":"#06101f";ctx.font="900 19px -apple-system,Segoe UI,Arial";ctx.fillText(`${p}%`,x+42,yy+27)})});y+=ORGS.length*62+70;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Причины индекса и выводы",pad,y);y+=45;const low=rows.at(-1);const summary=[`Лучшее выполнение: ${top.o} — ${top.p}%.`,`Главная просадка: ${low.o} — ${low.p}%.`,`Рекомендация: ${low.p<80?`провести разбор ${low.o}, проверить вклад лидера/СС и дневные провалы.`:`зафиксировать сильные практики и удерживать темп без резкого роста норм.`}`,`Фокус недели: смотреть структуру баллов, наборы, увольнения и жалобы, а не только итоговый индекс.`];summary.forEach((s,i)=>{ctx.fillStyle="rgba(255,255,255,.06)";roundRect(ctx,pad,y+i*70,W-pad*2,52,16);ctx.fill();ctx.fillStyle="#E9EEF8";ctx.font="24px -apple-system,Segoe UI,Arial";ctx.fillText("• "+s,pad+24,y+i*70+34)});y+=summary.length*70+70;ctx.fillStyle="#7FA8D8";ctx.font="22px -apple-system,Segoe UI,Arial";ctx.fillText("GosCore Analytics 23 · Created by John Lincoln · © 2026",pad,y);const a=document.createElement("a");a.download=`Analytics23_week_${state.week}_report.png`;a.href=canvas.toDataURL("image/png");a.click()}
+function exportDailyPNG(day){day=day||currentDayCode();const W=2000,H=2050,pad=70,canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;const ctx=canvas.getContext("2d");const grad=ctx.createLinearGradient(0,0,W,H);grad.addColorStop(0,"#0B1426");grad.addColorStop(.55,"#07101F");grad.addColorStop(1,"#101827");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);reportHeader(ctx,W,pad,`Analytics 23 — ежедневный отчёт ${day}`,`Grand Mobile · 23 сервер · Неделя ${state.week} · день ${day}`);const rows=sortedDayOrgs(day),totalPoints=rows.reduce((s,r)=>s+r.s.points,0),leader=rows.reduce((s,r)=>s+r.s.leaderPoints,0),staff=rows.reduce((s,r)=>s+r.s.staffPoints,0),online=rows.reduce((s,r)=>s+r.s.online,0),recruits=rows.reduce((s,r)=>s+r.s.recruits,0),events=rows.reduce((s,r)=>s+r.s.events,0),complaints=rows.reduce((s,r)=>s+r.s.complaints,0),avg=Math.round(rows.reduce((s,r)=>s+r.p,0)/rows.length),top=rows[0],low=rows.at(-1);const cw=(W-pad*2-40)/3;let y=215;[["Средний день-индекс",avg+"%",zone(avg)[0],zone(avg)[2]],["Баллы за день",totalPoints,"лидер + СС"],["Лидер дня",SHORT[top.o],top.p+"%"],["Баллы лидеров",leader,"за день"],["Баллы СС",staff,"за день"],["Онлайн / принято",`${online} / ${recruits}`,"сумма по ГОС"]].forEach((it,i)=>reportCard(ctx,pad+(i%3)*(cw+20),y+Math.floor(i/3)*160,cw,140,it[0],it[1],it[2],it[3]||"#F7F8FC"));y=570;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText(`Показатели организаций за ${day}`,pad,y);y+=44;const headers=["#","Орг","День%","Зона","Баллы","Лидер","СС","Норма","Онлайн","Наб.","Прин.","Увол.","Жал.","Пред.","Выг.","Штраф","Мер."];const xs=[pad,pad+60,pad+180,pad+310,pad+440,pad+570,pad+700,pad+830,pad+960,pad+1090,pad+1220,pad+1350,pad+1480,pad+1600,pad+1700,pad+1800,pad+1910];ctx.fillStyle="#A6B0C3";ctx.font="800 18px -apple-system,Segoe UI,Arial";headers.forEach((h,i)=>ctx.fillText(h,xs[i],y));y+=24;rows.forEach((r,i)=>{const yy=y+i*58,z=zone(r.p);ctx.fillStyle=i%2?"rgba(255,255,255,.04)":"rgba(255,255,255,.065)";roundRect(ctx,pad,yy,W-pad*2,48,14);ctx.fill();ctx.fillStyle=z[2]+"55";roundRect(ctx,pad,yy,12,48,6);ctx.fill();ctx.font="800 18px -apple-system,Segoe UI,Arial";[i+1,SHORT[r.o],r.p+"%",z[0],r.s.points,r.s.leaderPoints,r.s.staffPoints,Math.round(dailyNorm(r.o)),r.s.online,r.s.interviews,r.s.recruits,r.s.fired,r.s.complaints,r.s.warnings,r.s.reprimands,r.s.disciplinePenalty,r.s.events].forEach((v,j)=>{ctx.fillStyle=j==1?COLORS[r.o]:j==2?z[2]:"#F7F8FC";ctx.fillText(String(v),xs[j],yy+31)})});y+=rows.length*58+70;ctx.fillStyle="#F7F8FC";ctx.font="900 34px -apple-system,Segoe UI,Arial";ctx.fillText("Итоги дня",pad,y);y+=46;const summary=[`Лучший результат дня: ${top.o} — ${top.p}%.`,`Главная просадка дня: ${low.o} — ${low.p}%.`,`Всего мероприятий: ${events}. Жалоб: ${complaints}. Дисциплина: жалобы ×2, предупреждения ×4, выговоры ×6.`,`Рекомендация: ${low.p<80?`проверить, почему ${low.o} не закрывает дневную норму.`:`закрепить темп и не перегружать состав.`}`];summary.forEach((s,i)=>{ctx.fillStyle="rgba(255,255,255,.06)";roundRect(ctx,pad,y+i*70,W-pad*2,52,16);ctx.fill();ctx.fillStyle="#E9EEF8";ctx.font="24px -apple-system,Segoe UI,Arial";ctx.fillText("• "+s,pad+24,y+i*70+34)});y+=summary.length*70+70;ctx.fillStyle="#7FA8D8";ctx.font="22px -apple-system,Segoe UI,Arial";ctx.fillText("GosCore Analytics 23 · Daily Report · Created by John Lincoln · © 2026",pad,y);const a=document.createElement("a");a.download=`Analytics23_day_${day}_week_${state.week}.png`;a.href=canvas.toDataURL("image/png");a.click()}
 function exportPNG(){exportWeeklyPNG()}if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}render();
 </script></body></html>
